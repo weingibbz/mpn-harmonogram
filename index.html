@@ -548,7 +548,9 @@ footer {
   text-transform: uppercase;
 }
 
-/* === FILTER CONTROLS === */
+/* === FILTER CONTROLS — pure CSS, no JS === */
+#f-all, #f-michal, #f-zbigniew, #f-required { display: none; }
+
 .filters {
   display: flex;
   gap: 8px;
@@ -572,20 +574,25 @@ footer {
   background: white;
   cursor: pointer;
   letter-spacing: 0.04em;
+  user-select: none;
 }
-.filter-btn.active {
+body:has(#f-all:checked)      .lbl-all,
+body:has(#f-michal:checked)   .lbl-michal,
+body:has(#f-zbigniew:checked) .lbl-zbigniew,
+body:has(#f-required:checked) .lbl-required {
   background: var(--ink);
   color: var(--paper);
   border-color: var(--ink);
 }
-.filter-btn.f-michal.active { background: var(--michal-ink); border-color: var(--michal-ink); }
-.filter-btn.f-zbigniew.active { background: var(--zbigniew-ink); border-color: var(--zbigniew-ink); }
+body:has(#f-michal:checked)   .lbl-michal   { background: var(--michal-ink);   border-color: var(--michal-ink); }
+body:has(#f-zbigniew:checked) .lbl-zbigniew { background: var(--zbigniew-ink); border-color: var(--zbigniew-ink); }
 
-body.f-michal tr.has-op-zbigniew { display: none; }
-body.f-michal tr.has-op-none { display: none; }
-body.f-zbigniew tr.has-op-michal { display: none; }
-body.f-zbigniew tr.has-op-none { display: none; }
-body.f-required tr.has-op-none { display: none; }
+/* Filtracja wierszy — :has() działa we wszystkich nowoczesnych przeglądarkach */
+body:has(#f-michal:checked)   tr.has-op-zbigniew { display: none; }
+body:has(#f-michal:checked)   tr.has-op-none     { display: none; }
+body:has(#f-zbigniew:checked) tr.has-op-michal   { display: none; }
+body:has(#f-zbigniew:checked) tr.has-op-none     { display: none; }
+body:has(#f-required:checked) tr.has-op-none     { display: none; }
 
 /* === RESPONSIVE & PRINT === */
 @media (max-width: 768px) {
@@ -614,6 +621,11 @@ body.f-required tr.has-op-none { display: none; }
 </style>
 </head>
 <body>
+
+<input type="radio" id="f-all"      name="filter" checked>
+<input type="radio" id="f-michal"   name="filter">
+<input type="radio" id="f-zbigniew" name="filter">
+<input type="radio" id="f-required" name="filter">
 
 <div class="shell">
 
@@ -674,10 +686,10 @@ body.f-required tr.has-op-none { display: none; }
 
   <div class="filters">
     <span class="filter-label">Filtr operatora:</span>
-    <button class="filter-btn active" data-filter="all">Wszystko</button>
-    <button class="filter-btn f-michal" data-filter="michal">Michał</button>
-    <button class="filter-btn f-zbigniew" data-filter="zbigniew">Zbigniew</button>
-    <button class="filter-btn" data-filter="required">Tylko z obecnością</button>
+    <label class="filter-btn lbl-all" for="f-all">Wszystko</label>
+    <label class="filter-btn lbl-michal" for="f-michal">Michał</label>
+    <label class="filter-btn lbl-zbigniew" for="f-zbigniew">Zbigniew</label>
+    <label class="filter-btn lbl-required" for="f-required">Tylko z obecnością</label>
   </div>
 </nav>
 
@@ -1088,20 +1100,6 @@ body.f-required tr.has-op-none { display: none; }
 </div>
 
 <script>
-// Day filter
-const filterBtns = document.querySelectorAll('.filter-btn');
-filterBtns.forEach(btn => {
-  btn.addEventListener('click', () => {
-    filterBtns.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const f = btn.dataset.filter;
-    document.body.classList.remove('f-michal', 'f-zbigniew', 'f-required');
-    if (f === 'michal') document.body.classList.add('f-michal');
-    if (f === 'zbigniew') document.body.classList.add('f-zbigniew');
-    if (f === 'required') document.body.classList.add('f-required');
-  });
-});
-
 // Highlight current day if within festival
 const today = new Date();
 const day = today.getDate();
