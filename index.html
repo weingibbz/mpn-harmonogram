@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>522 Musica Polonica Nova "ZMYSŁY" — Harmonogram operatora</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600;9..144,700;9..144,900&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1614;
+  --ink-soft: #4a4340;
+  --ink-mute: #8a827e;
+  --paper: #faf7f2;
+  --paper-warm: #f3ede2;
+  --line: #d6cfc4;
+  --line-soft: #ebe5d8;
+  --accent: #7a1f3d;
+  --accent-soft: #f5e4ea;
+  --accent-deep: #4a0f25;
+  --gold: #b08540;
+
+  --concert: #fff4d6;
+  --concert-bd: #e8c757;
+  --rehearsal: #e3f0d8;
+  --rehearsal-bd: #9bc472;
+  --montage: #ece8e0;
+  --montage-bd: #c4bcad;
+  --external: #dde6f0;
+  --external-bd: #95a8bf;
+  --cancelled: #f5d8d8;
+  --cancelled-bd: #c98080;
+
+  --michal: #f5d8c0;
+  --michal-ink: #7a3a0e;
+  --zbigniew: #cfdef0;
+  --zbigniew-ink: #1f4870;
+  --both: #d4e5c8;
+  --both-ink: #34561e;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.55;
+  font-size: 15px;
+  font-feature-settings: "ss01", "cv11";
+}
+
+/* === LAYOUT === */
+.shell {
+  max-width: 1480px;
+  margin: 0 auto;
+  padding: 0 32px 80px;
+}
+
+/* === MASTHEAD === */
+.masthead {
+  border-bottom: 2px solid var(--ink);
+  padding: 40px 32px 24px;
+  margin: 0 -32px 32px;
+  background: linear-gradient(180deg, var(--paper-warm) 0%, var(--paper) 100%);
+}
+.masthead-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.edition { color: var(--accent); font-weight: 700; }
+.title {
+  font-family: 'Fraunces', serif;
+  font-weight: 300;
+  font-size: clamp(34px, 5vw, 56px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+.title em {
+  font-style: italic;
+  font-weight: 600;
+  color: var(--accent);
+}
+.subtitle {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 18px;
+  color: var(--ink-soft);
+  margin-bottom: 24px;
+}
+.meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px 32px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line-soft);
+}
+.meta-cell { font-size: 13px; }
+.meta-cell dt {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 4px;
+}
+.meta-cell dd { font-weight: 500; color: var(--ink); }
+
+/* === OPERATORS BANNER === */
+.operators {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  margin-bottom: 32px;
+  border: 1px solid var(--line);
+  background: white;
+}
+.operator-card {
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.operator-card:first-child { border-right: 1px solid var(--line); }
+.op-badge {
+  font-family: 'Fraunces', serif;
+  font-size: 32px;
+  font-weight: 600;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.op-michal .op-badge { background: var(--michal); color: var(--michal-ink); }
+.op-zbigniew .op-badge { background: var(--zbigniew); color: var(--zbigniew-ink); }
+.op-name {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.op-role {
+  font-size: 12px;
+  color: var(--ink-soft);
+  font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* === RULES === */
+.rules {
+  background: var(--accent-soft);
+  border-left: 4px solid var(--accent);
+  padding: 18px 22px;
+  margin-bottom: 32px;
+  font-size: 14px;
+}
+.rules h3 {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 8px;
+  color: var(--accent-deep);
+}
+.rules ul { list-style: none; padding-left: 0; }
+.rules li {
+  padding: 3px 0 3px 22px;
+  position: relative;
+}
+.rules li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* === DAY NAV (sticky) === */
+.day-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--paper);
+  border-bottom: 1px solid var(--ink);
+  padding: 12px 0;
+  margin: 0 -32px 32px;
+  padding-left: 32px;
+  padding-right: 32px;
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.day-nav-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-right: 12px;
+}
+.day-nav a {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink);
+  text-decoration: none;
+  padding: 6px 14px;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  transition: all 0.15s ease;
+  letter-spacing: 0.04em;
+}
+.day-nav a:hover {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+.day-nav a.intense {
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 700;
+}
+.day-nav a.intense::after {
+  content: " ●";
+  color: var(--accent);
+}
+
+/* === DAY SECTIONS === */
+.day {
+  margin-bottom: 64px;
+  scroll-margin-top: 80px;
+}
+.day-head {
+  display: flex;
+  align-items: baseline;
+  gap: 24px;
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 12px;
+  margin-bottom: 8px;
+}
+.day-num {
+  font-family: 'Fraunces', serif;
+  font-weight: 900;
+  font-size: 64px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+}
+.day-num em {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--accent);
+}
+.day-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.day-weekday {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+.day-title {
+  font-family: 'Fraunces', serif;
+  font-size: 28px;
+  font-weight: 600;
+  font-style: italic;
+  line-height: 1.15;
+  color: var(--ink);
+}
+.day-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  background: var(--accent);
+  color: white;
+  align-self: flex-start;
+}
+
+/* === SUMMARY BOX === */
+.summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  margin: 16px 0 24px;
+  border: 1px solid var(--ink);
+  background: white;
+}
+.summary-cell {
+  padding: 16px 20px;
+}
+.summary-cell:first-child {
+  border-right: 1px solid var(--line);
+  background: var(--michal);
+}
+.summary-cell:last-child {
+  background: var(--zbigniew);
+}
+.summary-cell.both {
+  grid-column: 1 / -1;
+  background: var(--both);
+  border-top: 1px solid var(--line);
+  border-right: none;
+}
+.summary-cell h4 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.summary-cell.michal h4 { color: var(--michal-ink); }
+.summary-cell.zbigniew h4 { color: var(--zbigniew-ink); }
+.summary-cell.both h4 { color: var(--both-ink); }
+.summary-cell p { font-size: 13.5px; line-height: 1.5; }
+
+/* === TABLE === */
+.table-wrap {
+  border: 1px solid var(--line);
+  overflow-x: auto;
+  background: white;
+  margin-bottom: 16px;
+}
+table.schedule {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+table.schedule thead {
+  background: var(--ink);
+  color: var(--paper);
+}
+table.schedule th {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: left;
+  padding: 12px 14px;
+  border-right: 1px solid var(--ink-soft);
+}
+table.schedule th:last-child { border-right: none; }
+table.schedule td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line-soft);
+  border-right: 1px solid var(--line-soft);
+  vertical-align: top;
+}
+table.schedule td:last-child { border-right: none; }
+table.schedule tr:last-child td { border-bottom: none; }
+table.schedule tbody tr:hover { background: var(--paper-warm); }
+
+.col-time {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 500;
+  white-space: nowrap;
+  width: 110px;
+  color: var(--ink);
+}
+.col-event { min-width: 280px; font-weight: 500; }
+.col-event strong { font-weight: 700; }
+.col-sala { width: 170px; color: var(--ink-soft); font-size: 12.5px; }
+.col-proj {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-mute);
+  width: 70px;
+}
+.col-prod { width: 150px; font-size: 12.5px; color: var(--ink-soft); }
+.col-presence { width: 150px; font-size: 12px; }
+.col-presence.required { color: var(--accent); font-weight: 700; }
+.col-op { width: 130px; text-align: center; }
+
+/* Row types */
+tr.t-koncert td.col-time { background: var(--concert); border-left: 3px solid var(--concert-bd); }
+tr.t-proba td.col-time { background: var(--rehearsal); border-left: 3px solid var(--rehearsal-bd); }
+tr.t-soundcheck td.col-time { background: var(--rehearsal); border-left: 3px solid var(--rehearsal-bd); }
+tr.t-montaz td.col-time { background: var(--montage); border-left: 3px solid var(--montage-bd); color: var(--ink-mute); }
+tr.t-demontaz td.col-time { background: var(--montage); border-left: 3px solid var(--montage-bd); color: var(--ink-mute); }
+tr.t-garderoba td.col-time { background: var(--montage); border-left: 3px solid var(--montage-bd); color: var(--ink-mute); }
+tr.t-przerwa td.col-time { background: var(--montage); border-left: 3px solid var(--montage-bd); color: var(--ink-mute); }
+tr.t-poza td.col-time { background: var(--external); border-left: 3px solid var(--external-bd); }
+tr.t-anulowane td { color: var(--ink-mute); text-decoration: line-through; }
+tr.t-anulowane td.col-time { background: var(--cancelled); border-left: 3px solid var(--cancelled-bd); text-decoration: none; }
+
+tr.t-montaz td, tr.t-demontaz td, tr.t-garderoba td, tr.t-przerwa td { color: var(--ink-mute); font-size: 12px; }
+tr.t-montaz td.col-event, tr.t-demontaz td.col-event, tr.t-garderoba td.col-event { font-weight: 400; }
+
+.icon {
+  display: inline-block;
+  margin-right: 6px;
+  font-size: 11px;
+}
+
+/* Operator pills */
+.op {
+  display: inline-block;
+  padding: 4px 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  border-radius: 0;
+}
+.op.michal { background: var(--michal); color: var(--michal-ink); }
+.op.zbigniew { background: var(--zbigniew); color: var(--zbigniew-ink); }
+.op.both { background: var(--both); color: var(--both-ink); font-size: 10px; padding: 4px 8px; }
+.op.none { color: var(--ink-mute); font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+
+/* Type badges in event column */
+.type-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 2px 6px;
+  margin-right: 6px;
+  vertical-align: middle;
+  display: inline-block;
+}
+.tag-koncert { background: var(--concert-bd); color: #5c4a10; }
+.tag-proba { background: var(--rehearsal-bd); color: #2e4615; }
+.tag-poza { background: var(--external-bd); color: #1f3852; }
+
+/* === SUB-HEADERS within day === */
+.subhead {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--accent);
+  margin: 28px 0 10px;
+  padding-left: 12px;
+  border-left: 3px solid var(--accent);
+}
+
+/* === LEGEND === */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  padding: 14px 18px;
+  background: white;
+  border: 1px solid var(--line);
+  margin-bottom: 24px;
+  font-size: 12px;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.04em;
+}
+.swatch {
+  width: 14px;
+  height: 14px;
+  border: 1px solid rgba(0,0,0,0.15);
+  flex-shrink: 0;
+}
+.swatch.s-koncert { background: var(--concert); }
+.swatch.s-proba { background: var(--rehearsal); }
+.swatch.s-montaz { background: var(--montage); }
+.swatch.s-poza { background: var(--external); }
+.swatch.s-cancelled { background: var(--cancelled); }
+.swatch.s-michal { background: var(--michal); }
+.swatch.s-zbigniew { background: var(--zbigniew); }
+.swatch.s-both { background: var(--both); }
+
+/* === LOKALIZACJE === */
+.lok-section {
+  margin-top: 64px;
+  padding-top: 32px;
+  border-top: 2px solid var(--ink);
+}
+.lok-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 300;
+  font-size: 42px;
+  font-style: italic;
+  margin-bottom: 24px;
+  letter-spacing: -0.02em;
+}
+.lok-title em { font-style: normal; color: var(--accent); font-weight: 600; }
+.lok-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 16px;
+}
+.lok-card {
+  border: 1px solid var(--line);
+  background: white;
+  padding: 18px 22px;
+}
+.lok-card.external {
+  background: var(--external);
+  border-color: var(--external-bd);
+}
+.lok-name {
+  font-family: 'Fraunces', serif;
+  font-size: 19px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+.lok-events {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+/* === FOOTER === */
+footer {
+  margin-top: 64px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--ink-mute);
+  text-transform: uppercase;
+}
+
+/* === FILTER CONTROLS === */
+.filters {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-left: auto;
+  flex-wrap: wrap;
+}
+.filter-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+.filter-btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  background: white;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+}
+.filter-btn.active {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+.filter-btn.f-michal.active { background: var(--michal-ink); border-color: var(--michal-ink); }
+.filter-btn.f-zbigniew.active { background: var(--zbigniew-ink); border-color: var(--zbigniew-ink); }
+
+body.f-michal tr.has-op-zbigniew { display: none; }
+body.f-michal tr.has-op-none { display: none; }
+body.f-zbigniew tr.has-op-michal { display: none; }
+body.f-zbigniew tr.has-op-none { display: none; }
+body.f-required tr.has-op-none { display: none; }
+
+/* === RESPONSIVE & PRINT === */
+@media (max-width: 768px) {
+  .shell { padding: 0 16px 60px; }
+  .masthead { margin: 0 -16px 24px; padding: 28px 16px 20px; }
+  .day-nav { margin: 0 -16px 24px; padding-left: 16px; padding-right: 16px; }
+  .day-num { font-size: 48px; }
+  .day-title { font-size: 22px; }
+  .summary { grid-template-columns: 1fr; }
+  .summary-cell:first-child { border-right: none; border-bottom: 1px solid var(--line); }
+  .operators { grid-template-columns: 1fr; }
+  .operator-card:first-child { border-right: none; border-bottom: 1px solid var(--line); }
+  table.schedule { font-size: 11px; }
+  table.schedule th, table.schedule td { padding: 8px 6px; }
+  .col-prod, .col-proj { display: none; }
+  .filters { display: none; }
+}
+
+@media print {
+  body { background: white; font-size: 11px; }
+  .day-nav, .filters { display: none; }
+  .day { page-break-inside: avoid; }
+  .table-wrap { border: 1px solid black; }
+  table.schedule tbody tr:hover { background: transparent; }
+}
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="masthead-row">
+    <span>Narodowe Forum Muzyki Wrocław</span>
+    <span class="edition">№ 522 ◆ 14–17.V.2026</span>
+    <span>Harmonogram operatora</span>
+  </div>
+  <h1 class="title">Musica Polonica Nova<br><em>"Zmysły"</em></h1>
+  <p class="subtitle">wielowymiarowość · wielozmysłowość · synteza sztuk</p>
+
+  <dl class="meta-grid">
+    <div class="meta-cell"><dt>Dyrektor artystyczny</dt><dd>Paweł Hendrich</dd></div>
+    <div class="meta-cell"><dt>Koordynator festiwalu</dt><dd>Żaneta Kicińska</dd></div>
+    <div class="meta-cell"><dt>Koordynator instrumentów</dt><dd>Julian Duski</dd></div>
+    <div class="meta-cell"><dt>Edycja dokumentu</dt><dd>12.V.2026</dd></div>
+  </dl>
+</header>
+
+<!-- OPERATORS -->
+<div class="operators">
+  <div class="operator-card op-michal">
+    <div class="op-badge">M</div>
+    <div>
+      <div class="op-name">Michał</div>
+      <div class="op-role">Operator główny</div>
+    </div>
+  </div>
+  <div class="operator-card op-zbigniew">
+    <div class="op-badge">Z</div>
+    <div>
+      <div class="op-name">Zbigniew</div>
+      <div class="op-role">Operator drugi</div>
+    </div>
+  </div>
+</div>
+
+<!-- RULES -->
+<div class="rules">
+  <h3>Zasady obecności operatora</h3>
+  <ul>
+    <li><strong>Min. 1 godz.</strong> na każdej próbie i 1 godz. na każdym koncercie danego dnia</li>
+    <li>Wydarzenia poza NFM (we Wrocławiu) — operator wpada <strong>na chwilę</strong></li>
+    <li>Montaże, demontaże i garderoby — obecność <strong>nie wymagana</strong> (zaznaczone informacyjnie)</li>
+    <li>Wpisy <em>(jako set I)</em> oznaczają, że obecność spełniona przez wcześniejszy set tego samego wydarzenia</li>
+  </ul>
+</div>
+
+<!-- DAY NAV -->
+<nav class="day-nav">
+  <span class="day-nav-label">Skok do dnia:</span>
+  <a href="#d14">CZW 14.V</a>
+  <a href="#d15" class="intense">PT 15.V</a>
+  <a href="#d16" class="intense">SOB 16.V</a>
+  <a href="#d17">NDZ 17.V</a>
+
+  <div class="filters">
+    <span class="filter-label">Filtr operatora:</span>
+    <button class="filter-btn active" data-filter="all">Wszystko</button>
+    <button class="filter-btn f-michal" data-filter="michal">Michał</button>
+    <button class="filter-btn f-zbigniew" data-filter="zbigniew">Zbigniew</button>
+    <button class="filter-btn" data-filter="required">Tylko z obecnością</button>
+  </div>
+</nav>
+
+<!-- LEGEND -->
+<div class="legend">
+  <div class="legend-item"><span class="swatch s-koncert"></span> Koncert</div>
+  <div class="legend-item"><span class="swatch s-proba"></span> Próba / Soundcheck</div>
+  <div class="legend-item"><span class="swatch s-montaz"></span> Montaż / Garderoba</div>
+  <div class="legend-item"><span class="swatch s-poza"></span> Poza NFM</div>
+  <div class="legend-item"><span class="swatch s-cancelled"></span> Anulowane</div>
+  <div class="legend-item" style="margin-left:24px"><span class="swatch s-michal"></span> Michał</div>
+  <div class="legend-item"><span class="swatch s-zbigniew"></span> Zbigniew</div>
+  <div class="legend-item"><span class="swatch s-both"></span> Michał + Zbigniew</div>
+</div>
+
+<!-- ==================== 14 MAJA ==================== -->
+<section class="day" id="d14">
+  <div class="day-head">
+    <div class="day-num">14<em>.V</em></div>
+    <div class="day-info">
+      <div class="day-weekday">Czwartek · Dzień otwarcia</div>
+      <div class="day-title">Próba Światła // wieczór otwarcia</div>
+    </div>
+  </div>
+
+  <div class="summary">
+    <div class="summary-cell michal">
+      <h4>Michał — operator główny</h4>
+      <p>18:00–19:30 próba wieczorna Światło//Cień (Sala Główna ORLEN). 19:00–19:30 wpaść do Piekarni (Słońce.Powietrze.Popiół). 22:00 wpaść na Pięknienie (foyer -3).</p>
+    </div>
+    <div class="summary-cell zbigniew">
+      <h4>Zbigniew — operator drugi</h4>
+      <p>—</p>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table class="schedule">
+      <thead>
+        <tr>
+          <th class="col-time">Godziny</th>
+          <th class="col-event">Wydarzenie</th>
+          <th class="col-sala">Sala</th>
+          <th class="col-proj">Projekt</th>
+          <th class="col-prod">Producent</th>
+          <th class="col-presence">Obecność</th>
+          <th class="col-op">Operator</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="t-montaz has-op-none">
+          <td class="col-time">08:00–22:00</td>
+          <td class="col-event">Montaże — Random Check</td>
+          <td class="col-sala">Sala Czerwona NFM</td>
+          <td class="col-proj">6914</td>
+          <td class="col-prod">Zielańska Pola</td>
+          <td class="col-presence">nie wymagana</td>
+          <td class="col-op"><span class="op none">—</span></td>
+        </tr>
+        <tr class="t-garderoba has-op-none">
+          <td class="col-time">08:00–21:00</td>
+          <td class="col-event">Garderoba — Paterson (2.01) + Długosz (2.06)</td>
+          <td class="col-sala">2.01 / 2.06</td>
+          <td class="col-proj">6912</td>
+          <td class="col-prod">Kruszyńska Joanna</td>
+          <td class="col-presence">—</td>
+          <td class="col-op"><span class="op none">—</span></td>
+        </tr>
+        <tr class="t-proba has-op-none">
+          <td class="col-time">09:30–12:45</td>
+          <td class="col-event"><span class="type-tag tag-proba">Próba</span>Światło // Cień // Światłocień (FW)</td>
+          <td class="col-sala">Sala Główna ORLEN</td>
+          <td class="col-proj">6912</td>
+          <td class="col-prod">Kruszyńska Joanna</td>
+          <td class="col-presence">nie wymagana</td>
+          <td class="col-op"><span class="op none">—</span></td>
+        </tr>
+        <tr class="t-montaz has-op-none">
+          <td class="col-time">12:45–18:00</td>
+          <td class="col-event">Montaż Zoom in/zoom out (dźwięk, ekran, projektor)</td>
+          <td class="col-sala">Sala Główna ORLEN</td>
+          <td class="col-proj">6928</td>
+          <td class="col-prod">Jodlowski Katarzyna</td>
+          <td class="col-presence">nie wymagana</td>
+          <td class="col-op"><span class="op none">—</span></td>
+        </tr>
+        <tr class="t-montaz has-op-none">
+          <td class="col-time">13:00–17:30</td>
+          <td class="col-event">Montaż — Zoom in/zoom out</td>
+          <td class="col-sala">Sala Główna ORLEN</td>
+          <td class="col-proj">6928</td>
+          <td class="col-prod">Jodlowski Katarzyna</td>
+          <td class="col-presence">nie wymagana</td>
+          <td class="col-op"><span class="op none">—</span></td>
+        </tr>
+        <tr class="t-proba has-op-michal">
+          <td class="col-time">18:00–21:15</td>
+          <td class="col-event"><span class="type-tag tag-proba">Próba</span><strong>Światło // Cień // Światłocień</strong> (wieczorna)</td>
+          <td class="col-sala">Sala Główna ORLEN</td>
+          <td class="col-proj">6912</td>
+          <td class="col-prod">Kruszyńska Joanna</td>
+          <td class="col-presence required">TAK</td>
+          <td class="col-op"><span class="op michal">Michał</span></td>
+        </tr>
+        <tr class="t-poza has-op-michal">
+          <td class="col-time">19:00</td>
+          <td class="col-event"><span class="type-tag tag-poza">Poza NFM</span>Słońce. Powietrze. Popiół | Teatr Polski w Podziemiu</td>
+          <td class="col-sala">Piekarnia (CSPiG, Wrocław)</td>
+          <td class="col-proj">—</td>
+          <td class="col-prod">Teatr Polski</td>
+          <td class="col-presence">wpaść na chwilę</td>
+          <td class="col-op"><span class="op michal">Michał</span></td>
+        </tr>
+        <tr class="t-montaz has-op-none">
+          <td class="col-time">21:15–01:00</td>
+          <td class="col-event">Przebudowa sceny / stawianie FOHa</td>
+          <td class="col-sala">Sala Główna ORLEN</td>
+          <td class="col-proj">6928</td>
+          <td class="col-prod">Jodlowski Katarzyna</td>
+          <td class="col-presence">nie wymagana</td>
+          <td class="col-op"><span class="op none">—</span></td>
+        </tr>
+        <tr class="t-poza has-op-michal">
+          <td class="col-time">22:00</td>
+          <td class="col-event"><span class="type-tag tag-poza">Poza NFM</span>Pięknienie — wydarzenie towarzyszące</td>
+          <td class="col-sala">NFM, foyer -3</td>
+          <td class="col-proj">—</td>
+          <td class="col-prod">NFM</td>
+          <td class="col-presence">wpaść na chwilę</td>
+          <td class="col-op"><span class="op michal">Michał</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ==================== 15 MAJA ==================== -->
+<section class="day" id="d15">
+  <div class="day-head">
+    <div class="day-num">15<em>.V</em></div>
+    <div class="day-info">
+      <div class="day-weekday">Piątek</div>
+      <div class="day-title">Zoom In // Zoom Out · afterparty w mieście</div>
+      <span class="day-tag">Wyprzedane</span>
+    </div>
+  </div>
+
+  <div class="summary">
+    <div class="summary-cell michal">
+      <h4>Michał — operator główny</h4>
+      <p>13:00 Random Check (1h, Sala Czerwona) + reportaż Zoom In/Out: soundcheck 14:00, próba 15:00–19:00, KONCERT 20:00–22:00 (Sala Główna ORLEN). Wieczorem Toy Piano (Pomieszanie Zmysłów — zostać na 2 sety).</p>
+    </div>
+    <div class="summary-cell zbigniew">
+      <h4>Zbigniew — operator drugi</h4>
+      <p>Cały dzień przy realizacji Zoom In/Out (projekcja): soundcheck 14:00, próba 15:00–19:00, KONCERT 20:00–22:00 (Sala Główna ORLEN). Po koncercie — afterparty w Recepcji (Kuba Sojka 22:30).</p>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table class="schedule">
+      <thead>
+        <tr>
+          <th class="col-time">Godziny</th>
+          <th class="col-event">Wydarzenie</th>
+          <th class="col-sala">Sala</th>
+          <th class="col-proj">Projekt</th>
+          <th class="col-prod">Producent</th>
+          <th class="col-presence">Obecność</th>
+          <th class="col-op">Operator</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="t-montaz has-op-none"><td class="col-time">04:00–10:00</td><td class="col-event">Montaż LED — Random Check</td><td class="col-sala">Sala Czerwona NFM</td><td class="col-proj">6914</td><td class="col-prod">Zielańska Pola</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-montaz has-op-none"><td class="col-time">08:00–14:00</td><td class="col-event">Montaże NFM — Zoom in/zoom out</td><td class="col-sala">Sala Główna ORLEN</td><td class="col-proj">6928</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-montaz has-op-none"><td class="col-time">08:00–20:00</td><td class="col-event">Montaże NFM — Tobaro</td><td class="col-sala">Green Room</td><td class="col-proj">6926</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-montaz has-op-none"><td class="col-time">08:00–20:00</td><td class="col-event">Montaże NFM — Nowicki Duo</td><td class="col-sala">VIP Room (+1)</td><td class="col-proj">6924</td><td class="col-prod">Le Karolina</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-montaz has-op-none"><td class="col-time">08:00–20:00</td><td class="col-event">Montaże NFM — flow unit</td><td class="col-sala">Foyer +2</td><td class="col-proj">6925</td><td class="col-prod">Le Karolina</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-garderoba has-op-none"><td class="col-time">08:00–21:00</td><td class="col-event">Garderoba — Paterson (2.01) + Długosz (2.07)</td><td class="col-sala">2.01 / 2.07</td><td class="col-proj">6912</td><td class="col-prod">—</td><td class="col-presence">—</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-garderoba has-op-none"><td class="col-time">09:00–21:00</td><td class="col-event">Garderoba — Chór NFM (1.01/1.11/1.12)</td><td class="col-sala">garderoby</td><td class="col-proj">6914</td><td class="col-prod">Zielańska Pola</td><td class="col-presence">—</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-anulowane has-op-none"><td class="col-time">09:30–12:45</td><td class="col-event">Próba FW (ANULOWANA)</td><td class="col-sala">Sala Główna ORLEN</td><td class="col-proj">6912</td><td class="col-prod">—</td><td class="col-presence">pominąć</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-proba has-op-michal"><td class="col-time">10:00–21:00</td><td class="col-event"><span class="type-tag tag-proba">Próba</span><strong>Random Check</strong></td><td class="col-sala">Sala Czerwona NFM</td><td class="col-proj">6914</td><td class="col-prod">Zielańska Pola</td><td class="col-presence required">TAK (min. 1 godz.)</td><td class="col-op"><span class="op michal">Michał</span></td></tr>
+        <tr class="t-soundcheck has-op-both"><td class="col-time">14:00–15:00</td><td class="col-event"><span class="type-tag tag-proba">Soundcheck</span><strong>OMN — Zoom in/zoom out</strong></td><td class="col-sala">Sala Główna ORLEN</td><td class="col-proj">6928</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence required">TAK</td><td class="col-op"><span class="op both">Michał + Zbigniew</span></td></tr>
+        <tr class="t-proba has-op-both"><td class="col-time">15:00–19:00</td><td class="col-event"><span class="type-tag tag-proba">Próba</span><strong>Zoom in / zoom out</strong></td><td class="col-sala">Sala Główna ORLEN</td><td class="col-proj">6928</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence required">TAK (min. 1 godz.)</td><td class="col-op"><span class="op both">Michał + Zbigniew</span></td></tr>
+        <tr class="t-koncert has-op-both"><td class="col-time">20:00–22:00</td><td class="col-event"><span class="type-tag tag-koncert">Koncert</span><strong>Zoom In // Zoom Out</strong> — S. Bywalec / OMN <em>(wyprzedane)</em></td><td class="col-sala">Sala Główna ORLEN</td><td class="col-proj">6928</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence required">TAK</td><td class="col-op"><span class="op both">Michał + Zbigniew</span></td></tr>
+        <tr class="t-poza has-op-michal"><td class="col-time">22:00</td><td class="col-event"><span class="type-tag tag-poza">Poza NFM</span>Pomieszanie Zmysłów — set 1 (Romańczuk / Zemla)</td><td class="col-sala">Galeria Toy Piano (Wrocław)</td><td class="col-proj">—</td><td class="col-prod">NFM</td><td class="col-presence required">TAK, zostać na 2 sety</td><td class="col-op"><span class="op michal">Michał</span></td></tr>
+        <tr class="t-poza has-op-michal"><td class="col-time">22:20</td><td class="col-event"><span class="type-tag tag-poza">Poza NFM</span>Pomieszanie Zmysłów — set 2</td><td class="col-sala">Galeria Toy Piano (Wrocław)</td><td class="col-proj">—</td><td class="col-prod">NFM</td><td class="col-presence required">TAK, zostać na 2 sety</td><td class="col-op"><span class="op michal">Michał</span></td></tr>
+        <tr class="t-poza has-op-zbigniew"><td class="col-time">22:30</td><td class="col-event"><span class="type-tag tag-poza">Poza NFM</span><strong>Koncert (afterparty): Kuba Sojka w Recepcji</strong></td><td class="col-sala">Klubokawiarnia Recepcja (Wrocław)</td><td class="col-proj">6938</td><td class="col-prod">Gbyl-Stojek Patrycja</td><td class="col-presence">wpaść (min. 30 min)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-poza has-op-none"><td class="col-time">22:40</td><td class="col-event"><span class="type-tag tag-poza">Poza NFM</span>Pomieszanie Zmysłów — set 3</td><td class="col-sala">Galeria Toy Piano (Wrocław)</td><td class="col-proj">—</td><td class="col-prod">NFM</td><td class="col-presence">nie wymagana (opcjonalnie)</td><td class="col-op"><span class="op none">—</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ==================== 16 MAJA ==================== -->
+<section class="day" id="d16">
+  <div class="day-head">
+    <div class="day-num">16<em>.V</em></div>
+    <div class="day-info">
+      <div class="day-weekday">Sobota · Noc Muzeów (16:00–23:30)</div>
+      <div class="day-title">Galeria Dźwięków — najtrudniejszy dzień festiwalu</div>
+      <span class="day-tag">7+ wydarzeń równolegle</span>
+    </div>
+  </div>
+
+  <div class="summary">
+    <div class="summary-cell michal">
+      <h4>Michał — oś centralna</h4>
+      <p>Sala Główna ORLEN: próba gen. 10:00 → KONCERT Światło//Cień 18:00 → Galeria Dźwięków/wykłady 20:30. Foyer -1: CARDIO soundcheck/próba/set I.</p>
+    </div>
+    <div class="summary-cell zbigniew">
+      <h4>Zbigniew — pętla Galerii Dźwięków</h4>
+      <p>Od 13:00: Random Check (Sala Czerwona) + Tobaro (Green Room) + Surface (Kameralna) + Nowicki Duo / Z(a)mysły (VIP) + flow unit / Ry(t)my (Foyer +2) + Fangor_M (Foyer +3) + CARDIO set II/III.</p>
+    </div>
+  </div>
+
+  <h3 class="subhead">A. Montaże i próby (poranne / popołudniowe)</h3>
+  <div class="table-wrap">
+    <table class="schedule">
+      <thead>
+        <tr>
+          <th class="col-time">Godziny</th>
+          <th class="col-event">Wydarzenie</th>
+          <th class="col-sala">Sala</th>
+          <th class="col-proj">Projekt</th>
+          <th class="col-prod">Producent</th>
+          <th class="col-presence">Obecność</th>
+          <th class="col-op">Operator</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="t-montaz has-op-none"><td class="col-time">06:30–09:30</td><td class="col-event">Strojenie organów — Światło//Cień</td><td class="col-sala">Sala Główna ORLEN</td><td class="col-proj">6912</td><td class="col-prod">Kruszyńska Joanna</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-montaz has-op-none"><td class="col-time">08:00–12:00</td><td class="col-event">Montaże NFM — Tobaro</td><td class="col-sala">Green Room</td><td class="col-proj">6926</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-montaz has-op-none"><td class="col-time">08:00–12:00</td><td class="col-event">Montaże NFM — Surface of Timbre</td><td class="col-sala">Sala Kameralna NFM</td><td class="col-proj">6927</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-montaz has-op-none"><td class="col-time">08:00–12:00</td><td class="col-event">Montaże NFM — Nowicki Duo</td><td class="col-sala">VIP Room (+1)</td><td class="col-proj">6924</td><td class="col-prod">Le Karolina</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-montaz has-op-none"><td class="col-time">08:00–12:00</td><td class="col-event">Montaże NFM — flow unit</td><td class="col-sala">Foyer +2</td><td class="col-proj">6925</td><td class="col-prod">Le Karolina</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-proba has-op-zbigniew"><td class="col-time">09:00–16:30</td><td class="col-event"><span class="type-tag tag-proba">Próba</span><strong>Random Check</strong></td><td class="col-sala">Sala Czerwona NFM</td><td class="col-proj">6914</td><td class="col-prod">Zielańska Pola</td><td class="col-presence required">TAK (od 13:00 min. 1 godz.)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-proba has-op-michal"><td class="col-time">10:00–12:45</td><td class="col-event"><span class="type-tag tag-proba">Próba gen.</span><strong>Światło // Cień // Światłocień</strong></td><td class="col-sala">Sala Główna ORLEN</td><td class="col-proj">6912</td><td class="col-prod">Kruszyńska Joanna</td><td class="col-presence required">TAK</td><td class="col-op"><span class="op michal">Michał</span></td></tr>
+        <tr class="t-montaz has-op-none"><td class="col-time">13:15–13:45</td><td class="col-event">Rozładunek na rampie — Nowicki Duo</td><td class="col-sala">Rampa</td><td class="col-proj">6924</td><td class="col-prod">Le Karolina</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-montaz has-op-none"><td class="col-time">14:00–14:30</td><td class="col-event">Set-up — flow unit</td><td class="col-sala">Foyer +2</td><td class="col-proj">6925</td><td class="col-prod">Le Karolina</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-montaz has-op-none"><td class="col-time">14:00–15:30</td><td class="col-event">Set-up — Nowicki Duo</td><td class="col-sala">VIP Room (+1)</td><td class="col-proj">6924</td><td class="col-prod">Le Karolina</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-proba has-op-zbigniew"><td class="col-time">14:30–15:15</td><td class="col-event"><span class="type-tag tag-proba">Próba</span><strong>flow unit</strong> — soundcheck + próba</td><td class="col-sala">Foyer +2</td><td class="col-proj">6925</td><td class="col-prod">Le Karolina</td><td class="col-presence required">TAK (45 min — wyjątek)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-montaz has-op-none"><td class="col-time">12:00–15:30</td><td class="col-event">Montaże JP — Surface of Timbre</td><td class="col-sala">Sala Kameralna NFM</td><td class="col-proj">6927</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-soundcheck has-op-michal"><td class="col-time">13:00–14:00</td><td class="col-event"><span class="type-tag tag-proba">Soundcheck</span><strong>CARDIO fitness</strong></td><td class="col-sala">Foyer -1</td><td class="col-proj">6919</td><td class="col-prod">Muszkieta Jacek</td><td class="col-presence required">TAK</td><td class="col-op"><span class="op michal">Michał</span></td></tr>
+        <tr class="t-proba has-op-michal"><td class="col-time">14:00–15:00</td><td class="col-event"><span class="type-tag tag-proba">Próba</span><strong>CARDIO fitness</strong></td><td class="col-sala">Foyer -1</td><td class="col-proj">6919</td><td class="col-prod">Muszkieta Jacek</td><td class="col-presence required">TAK</td><td class="col-op"><span class="op michal">Michał</span></td></tr>
+        <tr class="t-proba has-op-zbigniew"><td class="col-time">15:30–17:00</td><td class="col-event"><span class="type-tag tag-proba">Próba</span><strong>Nowicki Duo</strong> — soundcheck + próba</td><td class="col-sala">VIP Room (+1)</td><td class="col-proj">6924</td><td class="col-prod">Le Karolina</td><td class="col-presence required">TAK (min. 45 min)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-przerwa has-op-none"><td class="col-time">15:00–15:40</td><td class="col-event">Przerwa obiadowa dla techniki</td><td class="col-sala">—</td><td class="col-proj">—</td><td class="col-prod">—</td><td class="col-presence">—</td><td class="col-op"><span class="op none">—</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="subhead">B. Wieczorna ścieżka koncertowa (Noc Muzeów)</h3>
+  <div class="table-wrap">
+    <table class="schedule">
+      <thead>
+        <tr>
+          <th class="col-time">Godziny</th>
+          <th class="col-event">Wydarzenie</th>
+          <th class="col-sala">Sala</th>
+          <th class="col-proj">Projekt</th>
+          <th class="col-prod">Producent</th>
+          <th class="col-presence">Obecność</th>
+          <th class="col-op">Operator</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="t-koncert has-op-michal"><td class="col-time">16:00–16:45</td><td class="col-event"><span class="type-tag tag-koncert">Koncert</span><strong>CARDIO Fitness</strong> (set I)</td><td class="col-sala">Foyer -1</td><td class="col-proj">6919</td><td class="col-prod">Muszkieta Jacek</td><td class="col-presence required">TAK</td><td class="col-op"><span class="op michal">Michał</span></td></tr>
+        <tr class="t-koncert has-op-zbigniew"><td class="col-time">16:00–17:30</td><td class="col-event"><span class="type-tag tag-koncert">Koncert</span><strong>Tobaro</strong> // Galeria Dźwięków (blok I)</td><td class="col-sala">Green Room</td><td class="col-proj">6926</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence required">TAK (chwilę)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-koncert has-op-zbigniew"><td class="col-time">16:00–23:00</td><td class="col-event"><span class="type-tag tag-koncert">Instalacja</span><strong>Random Check 8 | UN-ORGANIC</strong> (instalacja ciągła)</td><td class="col-sala">Sala Czerwona NFM</td><td class="col-proj">6914</td><td class="col-prod">Zielańska Pola</td><td class="col-presence required">TAK (chwilę)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-koncert has-op-none"><td class="col-time">16:45</td><td class="col-event">Strefa Ruchu — debata (Ruch Muzyczny)</td><td class="col-sala">Foyer -1, czerwone kanapy</td><td class="col-proj">—</td><td class="col-prod">NFM</td><td class="col-presence">opcjonalnie</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-koncert has-op-zbigniew"><td class="col-time">17:30</td><td class="col-event"><span class="type-tag tag-koncert">Koncert</span><strong>Surface of Timbre</strong> (set I) // Galeria Dźwięków</td><td class="col-sala">Sala Kameralna NFM</td><td class="col-proj">6927</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence required">TAK (chwilę)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-koncert has-op-michal"><td class="col-time">18:00–20:15</td><td class="col-event"><span class="type-tag tag-koncert">Koncert</span><strong>Światło // Cień // Światłocień</strong> (Długosz / Paterson)</td><td class="col-sala">Sala Główna ORLEN</td><td class="col-proj">6912</td><td class="col-prod">Kruszyńska Joanna</td><td class="col-presence required">TAK</td><td class="col-op"><span class="op michal">Michał</span></td></tr>
+        <tr class="t-koncert has-op-zbigniew"><td class="col-time">18:00</td><td class="col-event"><span class="type-tag tag-koncert">Koncert</span><strong>Fangor_M</strong> (set I) — Aleksander Wnuk / perkusja</td><td class="col-sala">Foyer +3</td><td class="col-proj">—</td><td class="col-prod">(brak iKsoris)</td><td class="col-presence required">TAK (chwilę, wybrać set)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-koncert has-op-zbigniew"><td class="col-time">18:00–18:30</td><td class="col-event"><span class="type-tag tag-koncert">Koncert</span><strong>Z(a)mysły</strong> (set I) = Nowicki Duo</td><td class="col-sala">VIP Room (+1)</td><td class="col-proj">6924</td><td class="col-prod">Le Karolina</td><td class="col-presence required">TAK (chwilę, wybrać set)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-koncert has-op-zbigniew"><td class="col-time">18:30–19:00</td><td class="col-event"><span class="type-tag tag-koncert">Koncert</span><strong>Ry(t)my // Pieśni</strong> (set I) = flow unit</td><td class="col-sala">Foyer +2</td><td class="col-proj">6925</td><td class="col-prod">Le Karolina</td><td class="col-presence required">TAK (chwilę, wybrać set)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-koncert has-op-zbigniew"><td class="col-time">18:30</td><td class="col-event">Surface of Timbre (set II)</td><td class="col-sala">Sala Kameralna NFM</td><td class="col-proj">6927</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence">(jako set I)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-koncert has-op-zbigniew"><td class="col-time">19:00–23:00</td><td class="col-event">Tobaro // Galeria Dźwięków (blok II)</td><td class="col-sala">Green Room</td><td class="col-proj">6926</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence">(jako blok I)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-koncert has-op-zbigniew"><td class="col-time">19:00–19:45</td><td class="col-event"><span class="type-tag tag-koncert">Koncert</span><strong>CARDIO Fitness</strong> (set II)</td><td class="col-sala">Foyer -1</td><td class="col-proj">6919</td><td class="col-prod">Muszkieta Jacek</td><td class="col-presence">TAK (lub set I/III)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-koncert has-op-zbigniew"><td class="col-time">19:30–20:00</td><td class="col-event">Z(a)mysły (set II) — Nowicki Duo</td><td class="col-sala">VIP Room (+1)</td><td class="col-proj">6924</td><td class="col-prod">Le Karolina</td><td class="col-presence">(jako set I)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-koncert has-op-zbigniew"><td class="col-time">20:00–20:30</td><td class="col-event">Ry(t)my // Pieśni (set II) — flow unit</td><td class="col-sala">Foyer +2</td><td class="col-proj">6925</td><td class="col-prod">Le Karolina</td><td class="col-presence">(jako set I)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-koncert has-op-zbigniew"><td class="col-time">20:00</td><td class="col-event">Surface of Timbre (set III)</td><td class="col-sala">Sala Kameralna NFM</td><td class="col-proj">6927</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence">(jako set I)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-koncert has-op-zbigniew"><td class="col-time">20:30</td><td class="col-event">Fangor_M (set II)</td><td class="col-sala">Foyer +3</td><td class="col-proj">—</td><td class="col-prod">—</td><td class="col-presence">(jako set I)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-koncert has-op-zbigniew"><td class="col-time">20:30–21:00</td><td class="col-event">Z(a)mysły (set III) — Nowicki Duo</td><td class="col-sala">VIP Room (+1)</td><td class="col-proj">6924</td><td class="col-prod">Le Karolina</td><td class="col-presence">(jako set I)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-koncert has-op-michal"><td class="col-time">20:30–22:00</td><td class="col-event"><span class="type-tag tag-koncert">Koncert</span><strong>Galeria Dźwięków / wykłady audio</strong> — Noc Muzeów</td><td class="col-sala">Sala Główna ORLEN</td><td class="col-proj">6913</td><td class="col-prod">(brak)</td><td class="col-presence">TAK (jeśli zostaje moc)</td><td class="col-op"><span class="op michal">Michał</span></td></tr>
+        <tr class="t-koncert has-op-zbigniew"><td class="col-time">21:00–21:45</td><td class="col-event"><span class="type-tag tag-koncert">Koncert</span><strong>CARDIO Fitness</strong> (set III)</td><td class="col-sala">Foyer -1</td><td class="col-proj">6919</td><td class="col-prod">Muszkieta Jacek</td><td class="col-presence">TAK (lub set I/II)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-koncert has-op-zbigniew"><td class="col-time">22:00–22:30</td><td class="col-event">Ry(t)my // Pieśni (set III) — flow unit</td><td class="col-sala">Foyer +2</td><td class="col-proj">6925</td><td class="col-prod">Le Karolina</td><td class="col-presence">(jako set I)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-koncert has-op-zbigniew"><td class="col-time">22:30</td><td class="col-event">Fangor_M (set III)</td><td class="col-sala">Foyer +3</td><td class="col-proj">—</td><td class="col-prod">—</td><td class="col-presence">(jako set I)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-demontaz has-op-none"><td class="col-time">23:00–01:00</td><td class="col-event">Demontaże (Tobaro, Surface, Nowicki, flow unit)</td><td class="col-sala">—</td><td class="col-proj">6924/25/26/27</td><td class="col-prod">—</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-demontaz has-op-none"><td class="col-time">23:00–03:00</td><td class="col-event">Demontaż — Random Check</td><td class="col-sala">Sala Czerwona NFM</td><td class="col-proj">6914</td><td class="col-prod">—</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ==================== 17 MAJA ==================== -->
+<section class="day" id="d17">
+  <div class="day-head">
+    <div class="day-num">17<em>.V</em></div>
+    <div class="day-info">
+      <div class="day-weekday">Niedziela · Zamknięcie festiwalu</div>
+      <div class="day-title">#704214 · voLume(n)</div>
+    </div>
+  </div>
+
+  <div class="summary">
+    <div class="summary-cell michal">
+      <h4>Michał — voLume(n)</h4>
+      <p>Sala Czerwona: 13:30 soundcheck/próba + open-doors 18:30.</p>
+    </div>
+    <div class="summary-cell zbigniew">
+      <h4>Zbigniew — #704214</h4>
+      <p>Sala Kameralna: 12:00 próba + 17:00 KONCERT #704214.</p>
+    </div>
+    <div class="summary-cell both">
+      <h4>Oboje razem — koncert finałowy</h4>
+      <p>19:00–20:30 KONCERT voLume(n) (Sala Czerwona) — finałowy koncert festiwalu, praca w parze.</p>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table class="schedule">
+      <thead>
+        <tr>
+          <th class="col-time">Godziny</th>
+          <th class="col-event">Wydarzenie</th>
+          <th class="col-sala">Sala</th>
+          <th class="col-proj">Projekt</th>
+          <th class="col-prod">Producent</th>
+          <th class="col-presence">Obecność</th>
+          <th class="col-op">Operator</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="t-demontaz has-op-none"><td class="col-time">08:00–20:00</td><td class="col-event">Demontaż NFM — Tobaro / Nowicki Duo / flow unit</td><td class="col-sala">Green Room / VIP / Foyer +2</td><td class="col-proj">6924/25/26</td><td class="col-prod">—</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-montaz has-op-none"><td class="col-time">08:00–09:00</td><td class="col-event">Montaż sceny — #704214</td><td class="col-sala">Sala Kameralna NFM</td><td class="col-proj">6911</td><td class="col-prod">Pajorska Zuzanna</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-garderoba has-op-none"><td class="col-time">08:00–22:00</td><td class="col-event">Garderoby — #704214 (2.05/2.06/2.07 SOLO)</td><td class="col-sala">2.05 / 2.06 / 2.07</td><td class="col-proj">6911</td><td class="col-prod">—</td><td class="col-presence">—</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-montaz has-op-none"><td class="col-time">10:00–12:00</td><td class="col-event">Montaż dźwięk i światło — #704214</td><td class="col-sala">Sala Kameralna NFM</td><td class="col-proj">6911</td><td class="col-prod">Pajorska Zuzanna</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-montaz has-op-none"><td class="col-time">10:00–13:30</td><td class="col-event">Montaże — voLume(n) (NFM + Spółdzielnia Muzyczna)</td><td class="col-sala">Sala Czerwona NFM</td><td class="col-proj">6918</td><td class="col-prod">Muszkieta Jacek</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-proba has-op-zbigniew"><td class="col-time">12:00–15:30</td><td class="col-event"><span class="type-tag tag-proba">Próba</span><strong>#704214</strong> (Sepia Ensemble)</td><td class="col-sala">Sala Kameralna NFM</td><td class="col-proj">6911</td><td class="col-prod">Pajorska Zuzanna</td><td class="col-presence required">TAK</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-proba has-op-michal"><td class="col-time">13:30–17:00</td><td class="col-event"><span class="type-tag tag-proba">Próba</span><strong>voLume(n)</strong> — soundcheck + próba</td><td class="col-sala">Sala Czerwona NFM</td><td class="col-proj">6918</td><td class="col-prod">Muszkieta Jacek</td><td class="col-presence required">TAK</td><td class="col-op"><span class="op michal">Michał</span></td></tr>
+        <tr class="t-koncert has-op-zbigniew"><td class="col-time">17:00–18:30</td><td class="col-event"><span class="type-tag tag-koncert">Koncert</span><strong>#704214</strong> — ZKP (Wrocław / Poznań)</td><td class="col-sala">Sala Kameralna NFM</td><td class="col-proj">6911</td><td class="col-prod">Pajorska Zuzanna</td><td class="col-presence required">TAK</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-demontaz has-op-none"><td class="col-time">18:30–20:00</td><td class="col-event">Demontaż — #704214</td><td class="col-sala">Sala Kameralna NFM</td><td class="col-proj">6911</td><td class="col-prod">—</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-koncert has-op-both"><td class="col-time">19:00–20:30</td><td class="col-event"><span class="type-tag tag-koncert">Koncert finałowy</span><strong>voLume(n)</strong> — Spółdzielnia Muzyczna</td><td class="col-sala">Sala Czerwona NFM</td><td class="col-proj">6918</td><td class="col-prod">Muszkieta Jacek</td><td class="col-presence required">TAK</td><td class="col-op"><span class="op both">Michał + Zbigniew</span></td></tr>
+        <tr class="t-demontaz has-op-none"><td class="col-time">20:30–22:00</td><td class="col-event">Demontaż — voLume(n)</td><td class="col-sala">Sala Czerwona NFM</td><td class="col-proj">6918</td><td class="col-prod">—</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ==================== LOKALIZACJE ==================== -->
+<section class="lok-section">
+  <h2 class="lok-title">Lokalizacje — <em>gdzie co gra</em></h2>
+  <div class="lok-grid">
+    <div class="lok-card">
+      <div class="lok-name">Sala Główna ORLEN</div>
+      <div class="lok-events">Światło//Cień//Światłocień (16.05 18:00) · Zoom in/zoom out (15.05 20:00) · Galeria Dźwięków / wykłady audio (16.05 20:30)</div>
+    </div>
+    <div class="lok-card">
+      <div class="lok-name">Sala Kameralna NFM</div>
+      <div class="lok-events">Surface of Timbre (16.05 17:30 / 18:30 / 20:00) · #704214 (17.05 17:00)</div>
+    </div>
+    <div class="lok-card">
+      <div class="lok-name">Sala Czerwona NFM</div>
+      <div class="lok-events">Random Check 8 | UN-ORGANIC (16.05 16:00–23:00, instalacja) · voLume(n) (17.05 19:00)</div>
+    </div>
+    <div class="lok-card">
+      <div class="lok-name">Green Room</div>
+      <div class="lok-events">Tobaro // Galeria Dźwięków (16.05 16:00–17:30 + 19:00–23:00)</div>
+    </div>
+    <div class="lok-card">
+      <div class="lok-name">VIP Room (+1)</div>
+      <div class="lok-events">Z(a)mysły = Nowicki Duo (16.05 18:00–18:30, 19:30–20:00, 20:30–21:00)</div>
+    </div>
+    <div class="lok-card">
+      <div class="lok-name">Foyer +2</div>
+      <div class="lok-events">Ry(t)my // Pieśni = flow unit (16.05 18:30–19:00, 20:00–20:30, 22:00–22:30)</div>
+    </div>
+    <div class="lok-card">
+      <div class="lok-name">Foyer +3</div>
+      <div class="lok-events">Fangor_M — Aleksander Wnuk / perkusja (16.05 18:00, 20:30, 22:30)</div>
+    </div>
+    <div class="lok-card">
+      <div class="lok-name">Foyer -1</div>
+      <div class="lok-events">CARDIO Fitness // Galeria Dźwięków (16.05 16:00, 19:00, 21:00) · Strefa Ruchu — debata (16.05 16:45, czerwone kanapy)</div>
+    </div>
+    <div class="lok-card">
+      <div class="lok-name">Foyer -3</div>
+      <div class="lok-events">Pięknienie — wyd. towarzyszące (14.05 22:00)</div>
+    </div>
+    <div class="lok-card external">
+      <div class="lok-name">Poza NFM · Piekarnia (CSPiG)</div>
+      <div class="lok-events">Słońce. Powietrze. Popiół | Teatr Polski w Podziemiu (14.05 19:00)</div>
+    </div>
+    <div class="lok-card external">
+      <div class="lok-name">Poza NFM · Galeria Toy Piano</div>
+      <div class="lok-events">Pomieszanie Zmysłów — Paweł Romańczuk / Agata Zemla (15.05 22:00, 22:20, 22:40)</div>
+    </div>
+    <div class="lok-card external">
+      <div class="lok-name">Poza NFM · Klubokawiarnia Recepcja</div>
+      <div class="lok-events">Kuba Sojka — afterparty (15.05 22:30)</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Dokument 12.V.2026 · Źródła: iKsoris (NFM Wrocław) + nfm.wroclaw.pl/festiwale/musica-polonica-nova
+</footer>
+
+</div>
+
+<script>
+// Day filter
+const filterBtns = document.querySelectorAll('.filter-btn');
+filterBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    filterBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const f = btn.dataset.filter;
+    document.body.classList.remove('f-michal', 'f-zbigniew', 'f-required');
+    if (f === 'michal') document.body.classList.add('f-michal');
+    if (f === 'zbigniew') document.body.classList.add('f-zbigniew');
+    if (f === 'required') document.body.classList.add('f-required');
+  });
+});
+
+// Highlight current day if within festival
+const today = new Date();
+const day = today.getDate();
+const month = today.getMonth() + 1;
+if (month === 5 && day >= 14 && day <= 17) {
+  const target = document.querySelector(`#d${day}`);
+  if (target) {
+    target.style.outline = '2px solid var(--accent)';
+    target.style.outlineOffset = '8px';
+  }
+}
+</script>
+
+</body>
+</html>
