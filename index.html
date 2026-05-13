@@ -190,15 +190,12 @@ body {
   font-weight: 700;
 }
 
-/* === DAY NAV (sticky) === */
+/* === DAY NAV (zwykła, niesticky - legend jest sticky) === */
 .day-nav {
-  position: sticky;
-  top: 0;
-  z-index: 50;
   background: var(--paper);
   border-bottom: 1px solid var(--ink);
   padding: 12px 0;
-  margin: 0 -32px 32px;
+  margin: 0 -32px 24px;
   padding-left: 32px;
   padding-right: 32px;
   display: flex;
@@ -497,12 +494,29 @@ tr.t-montaz td.col-event, tr.t-demontaz td.col-event, tr.t-garderoba td.col-even
 .legend {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 18px;
-  padding: 14px 18px;
-  background: white;
+  gap: 8px 14px;
+  padding: 12px 16px;
+  background: var(--paper);
   border: 1px solid var(--line);
-  margin-bottom: 24px;
+  border-top: 2px solid var(--ink);
+  margin: 0 -32px 24px;
+  padding-left: 32px;
+  padding-right: 32px;
   font-size: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  align-items: center;
+}
+/* Grupa WWO + next-event toggle wyrównana do prawej, oddzielona separatorem */
+.legend .controls-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 12px;
+  border-left: 1px solid var(--line);
 }
 .legend-item {
   display: flex;
@@ -581,7 +595,7 @@ footer {
 }
 
 /* === FILTER CONTROLS — pure CSS multi-select via :has() === */
-.ft-cb, .f-cb, #wwo-mode { position: absolute; left: -9999px; }
+.ft-cb, .f-cb, #wwo-mode, #next-toggle { position: absolute; left: -9999px; }
 
 /* Klikalna legenda */
 .legend-item {
@@ -723,19 +737,87 @@ tr:has(.done-cb:checked) td:not(.col-done) {
 /* Kolumna "Done" */
 .col-done { width: 32px; padding: 8px 4px !important; text-align: center; }
 
-/* === AUTO-SCROLL target highlight === */
-.is-next {
-  position: relative;
-}
-.is-next td:first-child::before {
-  content: "▶";
+/* === NEXT EVENT indicator (toggle przez #next-toggle) === */
+/* Wskaźnik na wierszu - pokazywany tylko gdy #next-toggle:checked */
+body:has(#next-toggle:checked) .is-next td:nth-child(2)::before {
+  content: "▶ ";
   color: var(--accent);
+  font-weight: 900;
   margin-right: 4px;
   animation: pulse 1.6s ease-in-out infinite;
+  display: inline-block;
+}
+body:has(#next-toggle:checked) .is-next {
+  background: var(--accent-soft) !important;
 }
 @keyframes pulse {
   0%, 100% { opacity: 0.4; }
   50% { opacity: 1; }
+}
+
+/* === Bottom bar "Następne wydarzenie" === */
+.next-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 10px 20px;
+  z-index: 100;
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 13px;
+  display: none;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.25);
+}
+.next-bar .nb-label {
+  background: var(--accent);
+  color: white;
+  padding: 3px 8px;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+}
+.next-bar .nb-time {
+  font-weight: 700;
+  color: white;
+  font-size: 15px;
+}
+.next-bar .nb-text {
+  flex: 1;
+  color: rgba(255,255,255,0.85);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.next-bar .nb-close {
+  background: none;
+  border: 1px solid rgba(255,255,255,0.3);
+  color: rgba(255,255,255,0.7);
+  cursor: pointer;
+  padding: 4px 10px;
+  font-family: inherit;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+}
+.next-bar .nb-close:hover { background: rgba(255,255,255,0.1); color: white; }
+/* Bar pokazywany gdy #next-toggle:checked + element ma klasę .has-next */
+body:has(#next-toggle:checked) .next-bar.has-next { display: flex; }
+body { padding-bottom: 0; }
+body:has(#next-toggle:checked):has(.next-bar.has-next) { padding-bottom: 60px; }
+
+/* Aktywne podświetlenie "Następne" w legendzie */
+body:has(#next-toggle:checked) .lbl-next {
+  background: var(--accent);
+  color: white;
+  font-weight: 700;
+}
+body:has(#wwo-mode:checked) .lbl-wwo {
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 700;
 }
 
 .filters {
@@ -796,16 +878,36 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
     gap: 8px;
   }
   .day-nav a { font-size: 12px; padding: 8px 10px; }
-  /* Legend na mobile - wieloliniowo z auto-wrap */
+  /* Legend na mobile - wieloliniowo z auto-wrap; NIE sticky (zajmuje za dużo miejsca) */
   .legend {
     flex-wrap: wrap !important;
     gap: 6px 8px !important;
     font-size: 12px !important;
     padding: 12px !important;
+    position: static !important;
+    margin-left: -12px !important;
+    margin-right: -12px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    box-shadow: none !important;
   }
   .legend-item { font-size: 12px !important; padding: 6px 10px; }
   .legend-sep { display: none; }
-  #reset-filters { margin-left: 0 !important; width: 100%; text-align: center; margin-top: 6px; padding-top: 8px; border-top: 1px solid var(--line); }
+  .legend .controls-right {
+    width: 100%;
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+    border-left: none !important;
+    border-top: 1px solid var(--line);
+    padding-top: 8px !important;
+    margin-top: 4px;
+    justify-content: flex-end;
+  }
+  #reset-filters { margin-left: auto !important; }
+  /* Next-bar na mobile - wyższy padding, mniejszy text */
+  .next-bar { padding: 8px 12px !important; font-size: 11px !important; gap: 8px !important; }
+  .next-bar .nb-time { font-size: 13px !important; }
+  .next-bar .nb-text { font-size: 11px !important; }
   .day-num { font-size: 48px; }
   .day-title { font-size: 20px; }
   .meta-grid { grid-template-columns: 1fr 1fr; gap: 10px 16px; }
@@ -858,13 +960,16 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
 <!-- WWO mode (field mode toggle): mniej info, większy tekst -->
 <input type="checkbox" id="wwo-mode">
 
+<!-- Next-event indicator toggle: default ON -->
+<input type="checkbox" id="next-toggle" checked>
+
 <div class="shell">
 
 <!-- MASTHEAD -->
 <header class="masthead">
   <div class="masthead-row">
     <span>Narodowe Forum Muzyki Wrocław</span>
-    <span class="edition">(8)</span>
+    <span class="edition">(9)</span>
     <span>Harmonogram operatora</span>
   </div>
   <h1 class="title">Musica Polonica Nova<br><em>"Zmysły"</em></h1>
@@ -888,7 +993,7 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
 
 </nav>
 
-<!-- LEGEND — multi-select filters -->
+<!-- LEGEND (sticky) — multi-select filters + view controls -->
 <div class="legend">
   <label class="legend-item lg-koncert" for="ft-koncert" title="Filtruj koncerty"><span class="swatch s-koncert"></span> Koncert</label>
   <label class="legend-item lg-proba" for="ft-proba" title="Filtruj próby i soundchecki"><span class="swatch s-proba"></span> Próba / Soundcheck</label>
@@ -900,9 +1005,11 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
   <label class="legend-item lg-zbigniew" for="f-zbigniew" title="Filtruj wydarzenia Zbigniewa"><span class="swatch s-zbigniew"></span> Zbigniew</label>
   <span class="legend-item" style="cursor: default;"><span class="swatch s-both"></span> Michał + Zbigniew</span>
   <label class="legend-item lg-required" for="f-required" title="Ukryj wiersze bez obecności operatora">Tylko z obecnością</label>
-  <span class="legend-sep" style="border-left: 1px solid var(--line); height: 16px; margin: 0 4px;"></span>
-  <label class="legend-item lbl-wwo" for="wwo-mode" title="Tryb pracy w terenie: większa czcionka, mniej kolumn">WWO mode</label>
-  <a href="#" id="reset-filters" class="legend-item" style="margin-left: auto; color: var(--accent); font-weight: 700;" title="Wyczyść wszystkie filtry">↺ Pokaż wszystko</a>
+  <a href="#" id="reset-filters" class="legend-item" style="color: var(--accent); font-weight: 700;" title="Wyczyść wszystkie filtry">↺ Pokaż wszystko</a>
+  <div class="controls-right">
+    <label class="legend-item lbl-next" for="next-toggle" title="Pokaż wskaźnik najbliższego wydarzenia + pasek u dołu ekranu"><span style="font-size: 13px;">▶</span> Następne</label>
+    <label class="legend-item lbl-wwo" for="wwo-mode" title="Tryb pracy w terenie: większa czcionka, mniej kolumn"><span style="font-size: 13px;">⊕</span> WWO mode</label>
+  </div>
 </div>
 
 <!-- ==================== 14 MAJA ==================== -->
@@ -1346,16 +1453,24 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
 
 </div>
 
+
+<!-- Bottom bar "Następne wydarzenie" - kontroluje JS, widoczność zależy od #next-toggle -->
+<div class="next-bar" id="next-bar">
+  <span class="nb-label">Następne</span>
+  <span class="nb-time" id="nb-time">—</span>
+  <span class="nb-text" id="nb-text">—</span>
+</div>
+
 <script>
 // Wszystkie JS-y opakowane w try/catch - jeśli SharePoint blokuje JS, strona dalej działa (pure CSS filters)
 try {
-  // === 1. Highlight bieżący dzień festiwalu ===
+  // === 1. Highlight bieżący dzień festiwalu (tylko 14-17.05) ===
   var today = new Date();
   var day = today.getDate();
   var month = today.getMonth() + 1;
-  var isFestival = (month === 5 && day >= 14 && day <= 17);
+  var isFestivalDay = (month === 5 && day >= 14 && day <= 17);
 
-  if (isFestival) {
+  if (isFestivalDay) {
     var target = document.getElementById('d' + day);
     if (target) {
       target.style.outline = '2px solid #7a1f3d';
@@ -1364,40 +1479,83 @@ try {
     }
   }
 
-  // === 2. Auto-scroll do najbliższego nadchodzącego wydarzenia ===
-  if (isFestival) {
-    var now = new Date();
-    var nowMinutes = now.getHours() * 60 + now.getMinutes();
-    var todaySection = document.getElementById('d' + day);
-    if (todaySection) {
-      var rows = todaySection.querySelectorAll('tbody tr');
-      var bestRow = null;
-      for (var i = 0; i < rows.length; i++) {
-        var timeCell = rows[i].querySelector('.col-time');
-        if (!timeCell) continue;
-        var timeText = timeCell.textContent.trim();
-        var m = timeText.match(/^(\d{1,2}):(\d{2})/);
-        if (!m) continue;
-        var rowMinutes = parseInt(m[1], 10) * 60 + parseInt(m[2], 10);
-        // Najbliższe nadchodzące = pierwsze z czasem >= teraz - 30 min
-        // (tolerancja: jeśli wydarzenie zaczęło się <30 min temu, też uznajemy je za "aktualne")
-        if (rowMinutes >= nowMinutes - 30) {
-          bestRow = rows[i];
-          break;
-        }
+  // === 2. Wskaźnik najbliższego wydarzenia z obecnością ===
+  // Działa ZAWSZE (nie tylko podczas festiwalu) - jako "demo" / preview
+  // Reguły wyboru:
+  //   - tylko wiersze z col-presence.required (obecność wymagana)
+  //   - jeśli jesteśmy w czasie festiwalu: bierzemy dzisiejszą sekcję
+  //   - jeśli przed festiwalem: pierwsze wymagane wydarzenie w 14.05
+  //   - jeśli po festiwalu: ostatnie wymagane wydarzenie (jako "ostatnie pokazane")
+  function findNextEvent() {
+    var todaySection;
+    var nowMinutes = today.getHours() * 60 + today.getMinutes();
+    var dayToCheck;
+
+    if (isFestivalDay) {
+      dayToCheck = day;
+    } else if (month < 5 || (month === 5 && day < 14)) {
+      dayToCheck = 14; // przed festiwalem - pokaż pierwsze wydarzenie 14.05
+      nowMinutes = 0;
+    } else {
+      // po festiwalu - pokaż ostatnie wydarzenie 17.05 (lub zwróć null)
+      return null;
+    }
+
+    todaySection = document.getElementById('d' + dayToCheck);
+    if (!todaySection) return null;
+
+    var rows = todaySection.querySelectorAll('tbody tr');
+    for (var i = 0; i < rows.length; i++) {
+      var row = rows[i];
+      // Tylko wiersze z OBECNOŚCIĄ WYMAGANĄ
+      var presenceCell = row.querySelector('.col-presence');
+      if (!presenceCell || !presenceCell.classList.contains('required')) continue;
+
+      var timeCell = row.querySelector('.col-time');
+      if (!timeCell) continue;
+      var timeText = timeCell.textContent.trim();
+      var m = timeText.match(/^(\d{1,2}):(\d{2})/);
+      if (!m) continue;
+      var rowMinutes = parseInt(m[1], 10) * 60 + parseInt(m[2], 10);
+
+      // Tolerancja 30 min wstecz
+      if (rowMinutes >= nowMinutes - 30) {
+        return row;
       }
-      if (bestRow) {
-        bestRow.classList.add('is-next');
-        // Scroll do wiersza z delikatnym offsetem
-        setTimeout(function() {
-          var rect = bestRow.getBoundingClientRect();
-          window.scrollBy({
-            top: rect.top - 120,
-            left: 0,
-            behavior: 'smooth'
-          });
-        }, 300);
-      }
+    }
+    return null;
+  }
+
+  var nextRow = findNextEvent();
+  if (nextRow) {
+    nextRow.classList.add('is-next');
+
+    // Wypełnij bottom bar
+    var nbBar = document.getElementById('next-bar');
+    var nbTime = document.getElementById('nb-time');
+    var nbText = document.getElementById('nb-text');
+    if (nbBar && nbTime && nbText) {
+      var timeText = nextRow.querySelector('.col-time').textContent.trim();
+      var eventCell = nextRow.querySelector('.col-event');
+      var salaCell = nextRow.querySelector('.col-sala');
+      // Wyciągnij czysty tekst eventu (bez znaczników)
+      var eventText = eventCell ? eventCell.textContent.replace(/\s+/g, ' ').trim() : '';
+      var salaText = salaCell ? salaCell.textContent.trim() : '';
+      nbTime.textContent = timeText;
+      nbText.textContent = eventText + (salaText ? ' · ' + salaText : '');
+      nbBar.classList.add('has-next');
+    }
+
+    // Auto-scroll TYLKO podczas festiwalu (przed festiwalem przewinięcie do 14.05 byłoby uciążliwe)
+    if (isFestivalDay) {
+      setTimeout(function() {
+        var rect = nextRow.getBoundingClientRect();
+        window.scrollBy({
+          top: rect.top - 160,
+          left: 0,
+          behavior: 'smooth'
+        });
+      }, 300);
     }
   }
 
@@ -1421,12 +1579,13 @@ try {
       document.querySelectorAll('.ft-cb, .f-cb, #wwo-mode').forEach(function(cb) {
         cb.checked = false;
       });
+      // Zostawiamy #next-toggle (toggle widoku, nie filtr)
     });
   }
 
 } catch (e) {
   // JS zablokowany (np. SharePoint iframe) - pure CSS filters dalej działają
-  console && console.warn && console.warn('Interactive features disabled:', e);
+  if (typeof console !== 'undefined' && console.warn) console.warn('Interactive features disabled:', e);
 }
 </script>
 
