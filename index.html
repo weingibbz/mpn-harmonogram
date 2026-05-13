@@ -747,7 +747,7 @@ body:has(#wwo-mode:checked) .col-done { display: none; }
   body:has(#wwo-mode:checked) .next-bar.has-next .nb-text { font-size: 13px !important; }
 }
 
-/* === WWO MINI-HEADER === */
+/* === WWO MINI-HEADER (sticky, day + clock) === */
 .wwo-header {
   position: sticky;
   top: 56px;
@@ -765,11 +765,21 @@ body:has(#wwo-mode:checked) .col-done { display: none; }
   border-top: 2px solid var(--accent);
   border-bottom: 1px solid rgba(255,255,255,0.1);
   box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  overflow: hidden;
+  min-height: 38px;
+  box-sizing: border-box;
 }
+/* Desktop: pokazuj wwo-header GDY WWO mode włączony */
 body:has(#wwo-mode:checked) .wwo-header { display: flex; }
 .wwo-header .wh-day {
   font-weight: 700;
   font-size: 13px;
+  flex: 1 1 auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .wwo-header .wh-day em {
   font-style: normal;
@@ -782,12 +792,30 @@ body:has(#wwo-mode:checked) .wwo-header { display: flex; }
   font-weight: 700;
   color: white;
   border: 1px solid rgba(255,255,255,0.2);
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
 }
-@media (max-width: 768px) {
-  /* Mini-header CAŁKOWICIE UKRYTY na mobile (zarówno portrait jak landscape) */
-  .wwo-header { display: none !important; }
+
+/* Mobile portrait: WWO header POKAZYWANY ZAWSZE (niezależnie od WWO mode), niski profil */
+@media (max-width: 768px) and (orientation: portrait) {
+  .wwo-header {
+    display: flex !important;
+    position: sticky !important;
+    top: 0 !important;
+    margin: 0 -12px 8px !important;
+    padding: 5px 12px !important;
+    font-size: 11px !important;
+    min-height: 28px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .wwo-header .wh-day { font-size: 11px !important; }
+  .wwo-header .wh-clock {
+    padding: 2px 7px !important;
+    font-size: 11px !important;
+  }
 }
-/* Mobile landscape też ukrywa */
+
+/* Mobile landscape: ukryty (mało miejsca) */
 @media (orientation: landscape) and (max-height: 500px) {
   .wwo-header { display: none !important; }
 }
@@ -1133,7 +1161,6 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
     font-size: 11px !important;
     padding: 3px 6px !important;
   }
-  /* View-controls: kolumna - Następne nad WWO, zajmują mało szerokości */
   .view-controls {
     flex: 0 0 auto;
     flex-direction: column;
@@ -1150,17 +1177,48 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
     white-space: nowrap;
     width: 100%;
   }
-  /* Bloki uwag producenta — mniejsza czcionka */
+  /* Bloki uwag producenta — agresywnie mniejsze (inline style nadpisuje !important) */
   div[id^="note-"] {
-    padding: 10px 12px !important;
+    padding: 8px 10px !important;
+    margin-top: 8px !important;
   }
   div[id^="note-"] p {
-    font-size: 11px !important;
+    font-size: 10.5px !important;
     line-height: 1.4 !important;
+    margin: 0 0 4px !important;
   }
+  div[id^="note-"] p:last-child { margin-bottom: 0 !important; }
   div[id^="note-"] > div:first-child {
     font-size: 9px !important;
+    margin-bottom: 4px !important;
   }
+  /* Pasek Następne na dole - 20% niższy, czcionki ujednolicone */
+  .next-bar {
+    padding: 4px 12px !important;
+    font-size: 10px !important;
+    gap: 6px !important;
+    min-height: 32px;
+  }
+  .next-bar .nb-label {
+    font-size: 8px !important;
+    padding: 2px 5px !important;
+    letter-spacing: 0.1em !important;
+  }
+  .next-bar .nb-time { font-size: 10px !important; font-weight: 600 !important; }
+  .next-bar .nb-text {
+    font-size: 10px !important;
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .next-bar .nb-op {
+    font-size: 9px !important;
+    padding: 2px 5px !important;
+    letter-spacing: 0.04em !important;
+  }
+  body:has(#next-toggle:checked):has(.next-bar.has-next) { padding-bottom: 36px !important; }
 }
 
 @media print {
@@ -1197,7 +1255,7 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
 <header class="masthead">
   <div class="masthead-row">
     <span>Narodowe Forum Muzyki Wrocław</span>
-    <span class="edition">(12)</span>
+    <span class="edition">(13)</span>
     <span>Harmonogram operatora</span>
   </div>
   <h1 class="title">Musica Polonica Nova<br><em>"Zmysły"</em></h1>
