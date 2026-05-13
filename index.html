@@ -494,7 +494,7 @@ tr.t-montaz td.col-event, tr.t-demontaz td.col-event, tr.t-garderoba td.col-even
 /* === Legend wrap: sticky container z dwoma panelami === */
 .legend-wrap {
   position: sticky;
-  top: 0;
+  top: 36px;
   z-index: 60;
   margin: 0 -32px 24px;
   display: flex;
@@ -747,7 +747,7 @@ body:has(#wwo-mode:checked) .col-done { display: none; }
   body:has(#wwo-mode:checked) .next-bar.has-next .nb-text { font-size: 13px !important; }
 }
 
-/* === WWO MINI-HEADER (sticky, day + clock) === */
+/* === WWO MINI-HEADER (sticky, day + clock, ZAWSZE WIDOCZNY niezależnie od WWO mode) === */
 .wwo-header {
   position: sticky;
   top: 0;
@@ -755,8 +755,8 @@ body:has(#wwo-mode:checked) .col-done { display: none; }
   background: var(--ink);
   color: var(--paper);
   padding: 8px 32px;
-  margin: 0 -32px 8px;
-  display: none;
+  margin: 0 -32px 0;
+  display: flex;
   align-items: center;
   justify-content: space-between;
   font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
@@ -768,14 +768,9 @@ body:has(#wwo-mode:checked) .col-done { display: none; }
   flex-wrap: nowrap;
   white-space: nowrap;
   overflow: hidden;
-  min-height: 32px;
+  min-height: 36px;
   box-sizing: border-box;
   gap: 12px;
-}
-/* Desktop: pokazuj wwo-header GDY WWO mode włączony + przesuń legend pod niego */
-body:has(#wwo-mode:checked) .wwo-header { display: flex; }
-@media (min-width: 769px) {
-  body:has(#wwo-mode:checked) .legend-wrap { top: 32px; }
 }
 .wwo-header .wh-day {
   font-weight: 700;
@@ -1043,14 +1038,16 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
     gap: 8px;
   }
   .day-nav a { font-size: 12px; padding: 8px 10px; }
-  /* Legend-wrap na mobile - pionowo, niesticky (zajmuje za dużo miejsca) */
+  /* Legend-wrap na mobile portrait - sticky pod wwo-header (top:28px) */
   .legend-wrap {
     flex-direction: column;
-    position: static !important;
+    position: sticky !important;
+    top: 28px !important;
+    z-index: 60;
     margin: 0 -12px 16px !important;
     padding: 8px 12px !important;
     gap: 8px !important;
-    box-shadow: none !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08) !important;
   }
   .legend {
     flex-wrap: wrap !important;
@@ -1172,13 +1169,52 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
 /* === MOBILE LANDSCAPE: phone w orientacji poziomej === */
 /* Wykrywanie: orientation landscape + low height (telefon, nie laptop) */
 @media (orientation: landscape) and (max-height: 500px) {
-  /* Legend-wrap: legenda po lewej, view-controls po prawej WĄSKO i pionowo (Następne nad WWO) */
+  /* === GLOBALNE zmniejszenie tekstu w landscape === */
+  body { font-size: 13px; }
+  .day-num { font-size: 32px; }
+  .day-weekday { font-size: 11px; }
+  .day-head { padding: 8px 0; }
+  .title { font-size: 22px !important; }
+  .subtitle { font-size: 11px; }
+  .meta-cell dt { font-size: 9px; }
+  .meta-cell dd { font-size: 11.5px; }
+  .summary-cell h4 { font-size: 11px; }
+  .summary-cell p { font-size: 11px; line-height: 1.4; }
+  .subhead { font-size: 14px; padding: 6px 0; }
+  /* Tabela mniejsza */
+  table.schedule { font-size: 11px; }
+  table.schedule th, table.schedule td { padding: 6px 5px; }
+  .col-time { font-size: 10.5px; }
+  .col-sala { font-size: 10.5px; }
+  .col-presence { font-size: 10.5px; }
+  .col-op .op { font-size: 10px; padding: 2px 6px; }
+  .col-event { font-size: 11.5px; }
+  .type-tag { font-size: 8.5px; padding: 1px 4px; }
+
+  /* === WWO header w mobile landscape - bardzo niski profil (~22px) === */
+  .wwo-header {
+    padding: 3px 16px !important;
+    margin: 0 -16px 0 !important;
+    font-size: 10px !important;
+    min-height: 22px !important;
+    border-top-width: 1px !important;
+  }
+  .wwo-header .wh-day { font-size: 10px !important; }
+  .wwo-header .wh-clock {
+    padding: 1px 6px !important;
+    font-size: 10px !important;
+  }
+
+  /* Legend-wrap mobile landscape - sticky pod wwo-header (top:22px) */
   .legend-wrap {
     flex-direction: row;
     align-items: stretch;
     gap: 8px;
     padding: 6px 16px;
     margin: 0 -16px 12px;
+    position: sticky !important;
+    top: 22px !important;
+    z-index: 60;
   }
   .legend {
     flex: 1 1 auto;
@@ -1285,7 +1321,7 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
 <header class="masthead">
   <div class="masthead-row">
     <span>Narodowe Forum Muzyki Wrocław</span>
-    <span class="edition">(15)</span>
+    <span class="edition">(16)</span>
     <span>Harmonogram operatora</span>
   </div>
   <h1 class="title">Musica Polonica Nova<br><em>"Zmysły"</em></h1>
@@ -1309,6 +1345,14 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
 
 </nav>
 
+<!-- WWO mini-header: ZAWSZE widoczny sticky pod legendą -->
+<div class="wwo-header" id="wwo-header">
+  <div class="wh-day">
+    <span id="wh-day-label">14<em>.V</em> · czw</span>
+  </div>
+  <div class="wh-clock" id="wh-clock">—:—</div>
+</div>
+
 <!-- LEGEND + VIEW CONTROLS — dwa osobne sticky panele -->
 <div class="legend-wrap">
   <div class="legend">
@@ -1328,14 +1372,6 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
     <label class="legend-item lbl-next" for="next-toggle" title="Pokaż wskaźnik najbliższego wydarzenia + pasek u dołu ekranu"><span style="font-size: 13px;">▶</span> Następne</label>
     <label class="legend-item lbl-wwo" for="wwo-mode" title="Tryb pracy w terenie (Work With Operator): tylko niezbędne info, większa czcionka, ukryte mniej istotne kolumny"><span style="font-size: 13px;">🎯</span> WWO mode</label>
   </div>
-</div>
-
-<!-- WWO mini-header: widoczny TYLKO w WWO mode, sticky pod legendą -->
-<div class="wwo-header" id="wwo-header">
-  <div class="wh-day">
-    <span id="wh-day-label">14<em>.V</em> · czw</span>
-  </div>
-  <div class="wh-clock" id="wh-clock">—:—</div>
 </div>
 
 <!-- ==================== 14 MAJA ==================== -->
