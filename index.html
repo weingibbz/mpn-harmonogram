@@ -494,9 +494,9 @@ tr.t-montaz td.col-event, tr.t-demontaz td.col-event, tr.t-garderoba td.col-even
 /* === Legend wrap: sticky container z dwoma panelami === */
 .legend-wrap {
   position: sticky;
-  top: 36px;
-  z-index: 60;
-  margin: 0 -32px 24px;
+  top: 0;
+  z-index: 65;
+  margin: 0 -32px 0;
   display: flex;
   gap: 12px;
   background: var(--paper);
@@ -750,8 +750,8 @@ body:has(#wwo-mode:checked) .col-done { display: none; }
 /* === WWO MINI-HEADER (sticky, day + clock, ZAWSZE WIDOCZNY niezależnie od WWO mode) === */
 .wwo-header {
   position: sticky;
-  top: 0;
-  z-index: 70;
+  top: 55px;
+  z-index: 60;
   background: var(--ink);
   color: var(--paper);
   padding: 8px 32px;
@@ -1038,17 +1038,26 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
     gap: 8px;
   }
   .day-nav a { font-size: 12px; padding: 8px 10px; }
-  /* Legend-wrap na mobile portrait - sticky pod wwo-header (top:28px) */
+  /* Legend-wrap na mobile - sticky top:0, wwo-header pod nią (scrolluje się z treścią) */
   .legend-wrap {
     flex-direction: column;
     position: sticky !important;
-    top: 28px !important;
-    z-index: 60;
-    margin: 0 -12px 16px !important;
+    top: 0 !important;
+    z-index: 65;
+    margin: 0 -12px 0 !important;
     padding: 8px 12px !important;
     gap: 8px !important;
     box-shadow: 0 2px 4px rgba(0,0,0,0.08) !important;
   }
+  .wwo-header {
+    position: sticky !important;
+    padding: 5px 12px !important;
+    margin: 0 -12px 8px !important;
+    font-size: 11px !important;
+    min-height: 28px !important;
+  }
+  .wwo-header .wh-day { font-size: 11px !important; }
+  .wwo-header .wh-clock { padding: 2px 7px !important; font-size: 11px !important; }
   .legend {
     flex-wrap: wrap !important;
     gap: 6px 8px !important;
@@ -1205,17 +1214,27 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
     font-size: 10px !important;
   }
 
-  /* Legend-wrap mobile landscape - sticky pod wwo-header (top:22px) */
+  /* Legend-wrap mobile landscape - sticky top:0, wwo pod nią */
   .legend-wrap {
     flex-direction: row;
     align-items: stretch;
     gap: 8px;
     padding: 6px 16px;
-    margin: 0 -16px 12px;
+    margin: 0 -16px 0;
     position: sticky !important;
-    top: 22px !important;
-    z-index: 60;
+    top: 0 !important;
+    z-index: 65;
   }
+  .wwo-header {
+    position: sticky !important;
+    padding: 3px 16px !important;
+    margin: 0 -16px 8px !important;
+    font-size: 10px !important;
+    min-height: 22px !important;
+    border-top-width: 1px !important;
+  }
+  .wwo-header .wh-day { font-size: 10px !important; }
+  .wwo-header .wh-clock { padding: 1px 6px !important; font-size: 10px !important; }
   .legend {
     flex: 1 1 auto;
     flex-wrap: wrap;
@@ -1249,14 +1268,14 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
     margin-top: 8px;
   }
   .note-p {
-    font-size: 10.5px;
-    line-height: 1.4;
-    margin: 0 0 4px;
+    font-size: 10px !important;
+    line-height: 1.35 !important;
+    margin: 0 0 4px !important;
   }
-  .note-p-meta { font-size: 10px; }
+  .note-p-meta { font-size: 9.5px !important; }
   .note-eyebrow {
-    font-size: 9px;
-    margin-bottom: 4px;
+    font-size: 8.5px !important;
+    margin-bottom: 4px !important;
   }
   /* Pasek Następne na dole - 20% niższy, czcionki ujednolicone */
   .next-bar {
@@ -1321,7 +1340,7 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
 <header class="masthead">
   <div class="masthead-row">
     <span>Narodowe Forum Muzyki Wrocław</span>
-    <span class="edition">(16)</span>
+    <span class="edition">(17)</span>
     <span>Harmonogram operatora</span>
   </div>
   <h1 class="title">Musica Polonica Nova<br><em>"Zmysły"</em></h1>
@@ -1345,15 +1364,7 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
 
 </nav>
 
-<!-- WWO mini-header: ZAWSZE widoczny sticky pod legendą -->
-<div class="wwo-header" id="wwo-header">
-  <div class="wh-day">
-    <span id="wh-day-label">14<em>.V</em> · czw</span>
-  </div>
-  <div class="wh-clock" id="wh-clock">—:—</div>
-</div>
-
-<!-- LEGEND + VIEW CONTROLS — dwa osobne sticky panele -->
+<!-- LEGEND + VIEW CONTROLS (sticky na samej górze) -->
 <div class="legend-wrap">
   <div class="legend">
     <label class="legend-item lg-koncert" for="ft-koncert" title="Filtruj koncerty"><span class="swatch s-koncert"></span> Koncert</label>
@@ -1372,6 +1383,14 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
     <label class="legend-item lbl-next" for="next-toggle" title="Pokaż wskaźnik najbliższego wydarzenia + pasek u dołu ekranu"><span style="font-size: 13px;">▶</span> Następne</label>
     <label class="legend-item lbl-wwo" for="wwo-mode" title="Tryb pracy w terenie (Work With Operator): tylko niezbędne info, większa czcionka, ukryte mniej istotne kolumny"><span style="font-size: 13px;">🎯</span> WWO mode</label>
   </div>
+</div>
+
+<!-- Pasek dnia i zegara (sticky pod legendą) -->
+<div class="wwo-header" id="wwo-header">
+  <div class="wh-day">
+    <span id="wh-day-label">14<em>.V</em> · czw</span>
+  </div>
+  <div class="wh-clock" id="wh-clock">—:—</div>
 </div>
 
 <!-- ==================== 14 MAJA ==================== -->
