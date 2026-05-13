@@ -580,36 +580,163 @@ footer {
   text-transform: uppercase;
 }
 
-/* === FILTER CONTROLS — pure CSS, no JS === */
-#f-all, #f-michal, #f-zbigniew, #f-required,
-#ft-all, #ft-koncert, #ft-proba, #ft-montaz, #ft-poza, #ft-cancelled { display: none; }
+/* === FILTER CONTROLS — pure CSS multi-select via :has() === */
+.ft-cb, .f-cb, #wwo-mode { position: absolute; left: -9999px; }
 
 /* Klikalna legenda */
 .legend-item {
   cursor: pointer;
   user-select: none;
   transition: opacity 0.15s ease;
+  border-radius: 4px;
+  padding: 4px 8px;
+  margin: -4px -2px;
 }
 .legend-item:hover { opacity: 0.7; }
 
-/* Podświetlenie aktywnego elementu legendy */
+/* Podświetlenie aktywnych checkboxów legendy */
 body:has(#ft-koncert:checked)   .lg-koncert,
 body:has(#ft-proba:checked)     .lg-proba,
 body:has(#ft-montaz:checked)    .lg-montaz,
 body:has(#ft-poza:checked)      .lg-poza,
-body:has(#ft-cancelled:checked) .lg-cancelled {
-  outline: 2px solid var(--ink);
-  outline-offset: 3px;
+body:has(#ft-cancelled:checked) .lg-cancelled,
+body:has(#f-michal:checked)     .lg-michal,
+body:has(#f-zbigniew:checked)   .lg-zbigniew,
+body:has(#f-required:checked)   .lg-required {
+  background: var(--ink);
+  color: var(--paper);
   font-weight: 700;
 }
+body:has(#ft-koncert:checked)   .lg-koncert .swatch,
+body:has(#ft-proba:checked)     .lg-proba .swatch,
+body:has(#ft-montaz:checked)    .lg-montaz .swatch,
+body:has(#ft-poza:checked)      .lg-poza .swatch,
+body:has(#ft-cancelled:checked) .lg-cancelled .swatch,
+body:has(#f-michal:checked)     .lg-michal .swatch,
+body:has(#f-zbigniew:checked)   .lg-zbigniew .swatch {
+  outline: 1px solid var(--paper);
+  outline-offset: 1px;
+}
 
-/* Filtracja po typie wiersza (pure CSS, no JS - SharePoint iframe safe) */
-body:has(#ft-koncert:checked)   tr:not(.t-koncert) { display: none; }
-body:has(#ft-proba:checked)     tr:not(.t-proba):not(.t-soundcheck) { display: none; }
-body:has(#ft-montaz:checked)    tr:not(.t-montaz):not(.t-demontaz):not(.t-garderoba):not(.t-przerwa) { display: none; }
-body:has(#ft-poza:checked)      tr:not(.t-poza) { display: none; }
-body:has(#ft-cancelled:checked) tr:not(.t-anulowane) { display: none; }
-body:has([name="filter-type"]:not(#ft-all):checked) thead tr { display: table-row !important; }
+/* === MULTI-SELECT logika filtrowania typu (OR między zaznaczonymi typami) ===
+   Strategia:
+   1. Gdy któryś checkbox typu jest zaznaczony, ukryj wszystkie wiersze (poza thead)
+   2. Pokaż TYLKO te których typ jest zaznaczony
+   Brak żadnego zaznaczonego = pokaż wszystko (default)
+*/
+body:has(.ft-cb:checked) tbody tr { display: none; }
+body:has(#ft-koncert:checked)   tbody tr.t-koncert    { display: table-row; }
+body:has(#ft-proba:checked)     tbody tr.t-proba      { display: table-row; }
+body:has(#ft-proba:checked)     tbody tr.t-soundcheck { display: table-row; }
+body:has(#ft-montaz:checked)    tbody tr.t-montaz     { display: table-row; }
+body:has(#ft-montaz:checked)    tbody tr.t-demontaz   { display: table-row; }
+body:has(#ft-montaz:checked)    tbody tr.t-garderoba  { display: table-row; }
+body:has(#ft-montaz:checked)    tbody tr.t-przerwa    { display: table-row; }
+body:has(#ft-poza:checked)      tbody tr.t-poza       { display: table-row; }
+body:has(#ft-cancelled:checked) tbody tr.t-anulowane  { display: table-row; }
+
+/* === MULTI-SELECT logika filtrowania operatora === */
+/* Gdy któryś checkbox operatora (Michał/Zbigniew) zaznaczony, ukryj wszystkie */
+body:has(#f-michal:checked, #f-zbigniew:checked) tbody tr { display: none; }
+/* ...i pokaż tylko zaznaczonego (both/wspólne = pokazujemy gdy ktokolwiek zaznaczony) */
+body:has(#f-michal:checked)   tbody tr.has-op-michal   { display: table-row; }
+body:has(#f-michal:checked)   tbody tr.has-op-both     { display: table-row; }
+body:has(#f-zbigniew:checked) tbody tr.has-op-zbigniew { display: table-row; }
+body:has(#f-zbigniew:checked) tbody tr.has-op-both     { display: table-row; }
+
+/* Kombinacja: gdy ZARÓWNO typ JAK i operator zaznaczone, AND - musi spełniać oba */
+body:has(.ft-cb:checked):has(.f-cb:checked) tbody tr { display: none; }
+body:has(#f-michal:checked):has(#ft-koncert:checked)   tbody tr.has-op-michal.t-koncert,
+body:has(#f-michal:checked):has(#ft-koncert:checked)   tbody tr.has-op-both.t-koncert { display: table-row; }
+body:has(#f-michal:checked):has(#ft-proba:checked)     tbody tr.has-op-michal.t-proba,
+body:has(#f-michal:checked):has(#ft-proba:checked)     tbody tr.has-op-both.t-proba,
+body:has(#f-michal:checked):has(#ft-proba:checked)     tbody tr.has-op-michal.t-soundcheck,
+body:has(#f-michal:checked):has(#ft-proba:checked)     tbody tr.has-op-both.t-soundcheck { display: table-row; }
+body:has(#f-michal:checked):has(#ft-montaz:checked)    tbody tr.has-op-michal.t-montaz,
+body:has(#f-michal:checked):has(#ft-montaz:checked)    tbody tr.has-op-michal.t-demontaz,
+body:has(#f-michal:checked):has(#ft-montaz:checked)    tbody tr.has-op-michal.t-garderoba,
+body:has(#f-michal:checked):has(#ft-montaz:checked)    tbody tr.has-op-michal.t-przerwa { display: table-row; }
+body:has(#f-michal:checked):has(#ft-poza:checked)      tbody tr.has-op-michal.t-poza,
+body:has(#f-michal:checked):has(#ft-poza:checked)      tbody tr.has-op-both.t-poza { display: table-row; }
+body:has(#f-zbigniew:checked):has(#ft-koncert:checked) tbody tr.has-op-zbigniew.t-koncert,
+body:has(#f-zbigniew:checked):has(#ft-koncert:checked) tbody tr.has-op-both.t-koncert { display: table-row; }
+body:has(#f-zbigniew:checked):has(#ft-proba:checked)   tbody tr.has-op-zbigniew.t-proba,
+body:has(#f-zbigniew:checked):has(#ft-proba:checked)   tbody tr.has-op-both.t-proba,
+body:has(#f-zbigniew:checked):has(#ft-proba:checked)   tbody tr.has-op-zbigniew.t-soundcheck,
+body:has(#f-zbigniew:checked):has(#ft-proba:checked)   tbody tr.has-op-both.t-soundcheck { display: table-row; }
+body:has(#f-zbigniew:checked):has(#ft-montaz:checked)  tbody tr.has-op-zbigniew.t-montaz,
+body:has(#f-zbigniew:checked):has(#ft-montaz:checked)  tbody tr.has-op-zbigniew.t-demontaz { display: table-row; }
+body:has(#f-zbigniew:checked):has(#ft-poza:checked)    tbody tr.has-op-zbigniew.t-poza,
+body:has(#f-zbigniew:checked):has(#ft-poza:checked)    tbody tr.has-op-both.t-poza { display: table-row; }
+
+/* "Tylko z obecnością" - filtr niezależny, dodatkowo ukrywa rows bez operatora */
+body:has(#f-required:checked) tbody tr.has-op-none { display: none !important; }
+
+/* === DAY-ONLY MODE: pokaż tylko bieżący dzień (data-day-isactive na .day) === */
+body:has(.day-only:checked) section.day:not([data-active="true"]) { display: none; }
+
+/* === WWO MODE: ukryj mniej istotne kolumny + powiększ czcionkę === */
+body:has(#wwo-mode:checked) table.schedule { font-size: 15px; }
+body:has(#wwo-mode:checked) table.schedule th, body:has(#wwo-mode:checked) table.schedule td { padding: 14px 10px; }
+body:has(#wwo-mode:checked) .col-proj,
+body:has(#wwo-mode:checked) .col-prod { display: none; }
+body:has(#wwo-mode:checked) .lbl-wwo { background: var(--ink); color: var(--paper); }
+
+/* === DONE checkbox in rows (localStorage-persisted) === */
+.done-cb { display: none; }
+.done-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid var(--line);
+  border-radius: 50%;
+  cursor: pointer;
+  user-select: none;
+  background: white;
+  margin-right: 6px;
+  vertical-align: middle;
+  font-size: 13px;
+  line-height: 1;
+  color: var(--ink-mute);
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+.done-toggle:hover { border-color: var(--ink); }
+.done-toggle::before { content: ""; }
+.done-cb:checked + .done-toggle {
+  background: #4a7c2e;
+  border-color: #4a7c2e;
+  color: white;
+}
+.done-cb:checked + .done-toggle::before { content: "✓"; font-weight: 900; }
+/* Wiersz oznaczony jako zaliczony - delikatne wyciszenie */
+tr:has(.done-cb:checked) {
+  opacity: 0.45;
+}
+tr:has(.done-cb:checked) td:not(.col-done) {
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+/* Kolumna "Done" */
+.col-done { width: 32px; padding: 8px 4px !important; text-align: center; }
+
+/* === AUTO-SCROLL target highlight === */
+.is-next {
+  position: relative;
+}
+.is-next td:first-child::before {
+  content: "▶";
+  color: var(--accent);
+  margin-right: 4px;
+  animation: pulse 1.6s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
 
 .filters {
   display: flex;
@@ -661,32 +788,24 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
   .masthead { margin: 0 -12px 20px; padding: 24px 16px 16px; }
   .masthead-row { flex-direction: column; gap: 6px; align-items: flex-start; font-size: 10px; }
   .title { font-size: 32px !important; }
-  /* Day-nav + filters: zwijają się na mobile, nigdy nie chowane całkiem */
+  /* Day-nav na mobile - rząd poziomy, wraps */
   .day-nav {
     margin: 0 -12px 20px;
     padding: 12px 16px;
     flex-wrap: wrap;
     gap: 8px;
-    flex-direction: column;
-    align-items: stretch;
   }
-  .day-nav > a { font-size: 12px; padding: 8px 10px; flex: 0 0 auto; }
-  /* Filters: rząd przewijalny poziomo na mobile, by zmieścić wszystkie 4 opcje */
-  .filters {
-    display: flex !important;
-    margin-left: 0;
-    margin-top: 8px;
-    padding-top: 8px;
-    border-top: 1px solid var(--line);
-    gap: 6px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    flex-wrap: nowrap;
+  .day-nav a { font-size: 12px; padding: 8px 10px; }
+  /* Legend na mobile - wieloliniowo z auto-wrap */
+  .legend {
+    flex-wrap: wrap !important;
+    gap: 6px 8px !important;
+    font-size: 12px !important;
+    padding: 12px !important;
   }
-  .filters .filter-label {
-    display: none; /* "FILTR OPERATORA:" label - oszczędza miejsce */
-  }
-  .filter-btn { font-size: 10px; padding: 6px 10px; white-space: nowrap; flex: 0 0 auto; }
+  .legend-item { font-size: 12px !important; padding: 6px 10px; }
+  .legend-sep { display: none; }
+  #reset-filters { margin-left: 0 !important; width: 100%; text-align: center; margin-top: 6px; padding-top: 8px; border-top: 1px solid var(--line); }
   .day-num { font-size: 48px; }
   .day-title { font-size: 20px; }
   .meta-grid { grid-template-columns: 1fr 1fr; gap: 10px 16px; }
@@ -725,17 +844,19 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
 </head>
 <body>
 
-<input type="radio" id="f-all"      name="filter" checked>
-<input type="radio" id="f-michal"   name="filter">
-<input type="radio" id="f-zbigniew" name="filter">
-<input type="radio" id="f-required" name="filter">
+<!-- Filter checkboxes (multi-select, pure CSS via :has()) -->
+<input type="checkbox" id="ft-koncert"    class="ft-cb">
+<input type="checkbox" id="ft-proba"      class="ft-cb">
+<input type="checkbox" id="ft-montaz"     class="ft-cb">
+<input type="checkbox" id="ft-poza"       class="ft-cb">
+<input type="checkbox" id="ft-cancelled"  class="ft-cb">
 
-<input type="radio" id="ft-all"        name="filter-type" checked>
-<input type="radio" id="ft-koncert"    name="filter-type">
-<input type="radio" id="ft-proba"      name="filter-type">
-<input type="radio" id="ft-montaz"     name="filter-type">
-<input type="radio" id="ft-poza"       name="filter-type">
-<input type="radio" id="ft-cancelled"  name="filter-type">
+<input type="checkbox" id="f-michal"   class="f-cb">
+<input type="checkbox" id="f-zbigniew" class="f-cb">
+<input type="checkbox" id="f-required" class="f-cb">
+
+<!-- WWO mode (field mode toggle): mniej info, większy tekst -->
+<input type="checkbox" id="wwo-mode">
 
 <div class="shell">
 
@@ -743,7 +864,7 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
 <header class="masthead">
   <div class="masthead-row">
     <span>Narodowe Forum Muzyki Wrocław</span>
-    <span class="edition">(7)</span>
+    <span class="edition">(8)</span>
     <span>Harmonogram operatora</span>
   </div>
   <h1 class="title">Musica Polonica Nova<br><em>"Zmysły"</em></h1>
@@ -765,26 +886,23 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
   <a href="#d17">NDZ 17.V</a>
   <a href="#zasady" style="margin-left: 12px; border-color: var(--accent); color: var(--accent);">Zasady realizacji</a>
 
-  <div class="filters">
-    <span class="filter-label">Filtr operatora:</span>
-    <label class="filter-btn lbl-all" for="f-all">Wszystko</label>
-    <label class="filter-btn lbl-michal" for="f-michal">Michał</label>
-    <label class="filter-btn lbl-zbigniew" for="f-zbigniew">Zbigniew</label>
-    <label class="filter-btn lbl-required" for="f-required">Tylko z obecnością</label>
-  </div>
 </nav>
 
-<!-- LEGEND -->
+<!-- LEGEND — multi-select filters -->
 <div class="legend">
-  <label class="legend-item lg-koncert" for="ft-koncert" title="Pokaż tylko koncerty"><span class="swatch s-koncert"></span> Koncert</label>
-  <label class="legend-item lg-proba" for="ft-proba" title="Pokaż tylko próby i soundchecki"><span class="swatch s-proba"></span> Próba / Soundcheck</label>
-  <label class="legend-item lg-montaz" for="ft-montaz" title="Pokaż tylko montaże i garderoby"><span class="swatch s-montaz"></span> Montaż / Garderoba</label>
-  <label class="legend-item lg-poza" for="ft-poza" title="Pokaż tylko wydarzenia poza NFM"><span class="swatch s-poza"></span> Poza NFM</label>
-  <label class="legend-item lg-cancelled" for="ft-cancelled" title="Pokaż tylko anulowane"><span class="swatch s-cancelled"></span> Anulowane</label>
-  <label class="legend-item" for="ft-all" title="Pokaż wszystkie" style="margin-left:auto; font-weight: 700; color: var(--accent);">↺ Pokaż wszystko</label>
-  <div class="legend-item" style="margin-left:24px; cursor: default;"><span class="swatch s-michal"></span> Michał</div>
-  <div class="legend-item" style="cursor: default;"><span class="swatch s-zbigniew"></span> Zbigniew</div>
-  <div class="legend-item" style="cursor: default;"><span class="swatch s-both"></span> Michał + Zbigniew</div>
+  <label class="legend-item lg-koncert" for="ft-koncert" title="Filtruj koncerty"><span class="swatch s-koncert"></span> Koncert</label>
+  <label class="legend-item lg-proba" for="ft-proba" title="Filtruj próby i soundchecki"><span class="swatch s-proba"></span> Próba / Soundcheck</label>
+  <label class="legend-item lg-montaz" for="ft-montaz" title="Filtruj montaże i garderoby"><span class="swatch s-montaz"></span> Montaż / Garderoba</label>
+  <label class="legend-item lg-poza" for="ft-poza" title="Filtruj wydarzenia poza NFM"><span class="swatch s-poza"></span> Poza NFM</label>
+  <label class="legend-item lg-cancelled" for="ft-cancelled" title="Filtruj anulowane"><span class="swatch s-cancelled"></span> Anulowane</label>
+  <span class="legend-sep" style="border-left: 1px solid var(--line); height: 16px; margin: 0 4px;"></span>
+  <label class="legend-item lg-michal" for="f-michal" title="Filtruj wydarzenia Michała"><span class="swatch s-michal"></span> Michał</label>
+  <label class="legend-item lg-zbigniew" for="f-zbigniew" title="Filtruj wydarzenia Zbigniewa"><span class="swatch s-zbigniew"></span> Zbigniew</label>
+  <span class="legend-item" style="cursor: default;"><span class="swatch s-both"></span> Michał + Zbigniew</span>
+  <label class="legend-item lg-required" for="f-required" title="Ukryj wiersze bez obecności operatora">Tylko z obecnością</label>
+  <span class="legend-sep" style="border-left: 1px solid var(--line); height: 16px; margin: 0 4px;"></span>
+  <label class="legend-item lbl-wwo" for="wwo-mode" title="Tryb pracy w terenie: większa czcionka, mniej kolumn">WWO mode</label>
+  <a href="#" id="reset-filters" class="legend-item" style="margin-left: auto; color: var(--accent); font-weight: 700;" title="Wyczyść wszystkie filtry">↺ Pokaż wszystko</a>
 </div>
 
 <!-- ==================== 14 MAJA ==================== -->
@@ -811,7 +929,7 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
     <table class="schedule">
       <thead>
         <tr>
-          <th class="col-time">Godziny</th>
+          <th class="col-done" aria-label="Zaliczone"></th><th class="col-time">Godziny</th>
           <th class="col-event">Wydarzenie</th>
           <th class="col-sala">Sala</th>
           <th class="col-proj">Projekt</th>
@@ -821,7 +939,7 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
         </tr>
       </thead>
       <tbody>
-        <tr class="t-montaz has-op-none">
+        <tr class="t-montaz has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-mr-001"><label for="done-mr-001" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td>
           <td class="col-time">08:00–22:00</td>
           <td class="col-event">Montaże — Random Check</td>
           <td class="col-sala">Sala Czerwona NFM</td>
@@ -830,7 +948,7 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
           <td class="col-presence">nie wymagana</td>
           <td class="col-op"><span class="op none">—</span></td>
         </tr>
-        <tr class="t-garderoba has-op-none">
+        <tr class="t-garderoba has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-mr-002"><label for="done-mr-002" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td>
           <td class="col-time">08:00–21:00</td>
           <td class="col-event">Garderoba — Paterson (2.01) + Długosz (2.06)</td>
           <td class="col-sala">2.01 / 2.06</td>
@@ -839,7 +957,7 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
           <td class="col-presence">—</td>
           <td class="col-op"><span class="op none">—</span></td>
         </tr>
-        <tr class="t-proba has-op-none">
+        <tr class="t-proba has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-mr-003"><label for="done-mr-003" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td>
           <td class="col-time">09:30–12:45</td>
           <td class="col-event"><span class="type-tag tag-proba">Próba</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13449" target="_blank" rel="noopener">Światło // Cień // Światłocień</a> (FW)</td>
           <td class="col-sala">Sala Główna ORLEN</td>
@@ -848,7 +966,7 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
           <td class="col-presence">nie wymagana</td>
           <td class="col-op"><span class="op none">—</span></td>
         </tr>
-        <tr class="t-montaz has-op-none">
+        <tr class="t-montaz has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-mr-004"><label for="done-mr-004" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td>
           <td class="col-time">12:45–18:00</td>
           <td class="col-event">Montaż Zoom in/zoom out (dźwięk, ekran, projektor)</td>
           <td class="col-sala">Sala Główna ORLEN</td>
@@ -857,7 +975,7 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
           <td class="col-presence">nie wymagana</td>
           <td class="col-op"><span class="op none">—</span></td>
         </tr>
-        <tr class="t-montaz has-op-none">
+        <tr class="t-montaz has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-mr-005"><label for="done-mr-005" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td>
           <td class="col-time">13:00–17:30</td>
           <td class="col-event">Montaż — Zoom in/zoom out</td>
           <td class="col-sala">Sala Główna ORLEN</td>
@@ -866,7 +984,7 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
           <td class="col-presence">nie wymagana</td>
           <td class="col-op"><span class="op none">—</span></td>
         </tr>
-        <tr class="t-proba has-op-michal">
+        <tr class="t-proba has-op-michal"><td class="col-done"><input type="checkbox" class="done-cb" id="done-mr-006"><label for="done-mr-006" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td>
           <td class="col-time">18:00–21:15</td>
           <td class="col-event"><span class="type-tag tag-proba">Próba</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13449" target="_blank" rel="noopener"><strong>Światło // Cień // Światłocień</strong></a> (wieczorna)</td>
           <td class="col-sala">Sala Główna ORLEN</td>
@@ -875,7 +993,7 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
           <td class="col-presence required">TAK</td>
           <td class="col-op"><span class="op michal">Michał</span></td>
         </tr>
-        <tr class="t-poza has-op-michal">
+        <tr class="t-poza has-op-michal"><td class="col-done"><input type="checkbox" class="done-cb" id="done-mr-007"><label for="done-mr-007" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td>
           <td class="col-time">19:00</td>
           <td class="col-event"><span class="type-tag tag-poza">Poza NFM</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13432" target="_blank" rel="noopener">Słońce. Powietrze. Popiół | Teatr Polski w Podziemiu</a></td>
           <td class="col-sala"><a class="event-link" href="https://www.google.com/maps/search/?api=1&query=Piekarnia+CSP+Instytut+Grotowskiego+Ksi%C4%99cia+Witolda+62+Wroc%C5%82aw" target="_blank" rel="noopener">Piekarnia (CSPiG, Wrocław) ↗</a></td>
@@ -884,7 +1002,7 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
           <td class="col-presence">wpaść na chwilę</td>
           <td class="col-op"><span class="op michal">Michał</span></td>
         </tr>
-        <tr class="t-montaz has-op-none">
+        <tr class="t-montaz has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-mr-008"><label for="done-mr-008" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td>
           <td class="col-time">21:15–01:00</td>
           <td class="col-event">Przebudowa sceny / stawianie FOHa</td>
           <td class="col-sala">Sala Główna ORLEN</td>
@@ -893,7 +1011,7 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
           <td class="col-presence">nie wymagana</td>
           <td class="col-op"><span class="op none">—</span></td>
         </tr>
-        <tr class="t-poza has-op-michal">
+        <tr class="t-poza has-op-michal"><td class="col-done"><input type="checkbox" class="done-cb" id="done-mr-009"><label for="done-mr-009" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td>
           <td class="col-time">22:00</td>
           <td class="col-event"><span class="type-tag tag-poza">Poza NFM</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13433" target="_blank" rel="noopener">Pięknienie — wydarzenie towarzyszące</a></td>
           <td class="col-sala">NFM, foyer -3</td>
@@ -931,7 +1049,7 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
     <table class="schedule">
       <thead>
         <tr>
-          <th class="col-time">Godziny</th>
+          <th class="col-done" aria-label="Zaliczone"></th><th class="col-time">Godziny</th>
           <th class="col-event">Wydarzenie</th>
           <th class="col-sala">Sala</th>
           <th class="col-proj">Projekt</th>
@@ -941,22 +1059,22 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
         </tr>
       </thead>
       <tbody>
-        <tr class="t-montaz has-op-none"><td class="col-time">04:00–10:00</td><td class="col-event">Montaż LED — Random Check</td><td class="col-sala">Sala Czerwona NFM</td><td class="col-proj">6914</td><td class="col-prod">Zielańska Pola</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
-        <tr class="t-montaz has-op-none"><td class="col-time">08:00–14:00</td><td class="col-event">Montaże NFM — Zoom in/zoom out</td><td class="col-sala">Sala Główna ORLEN</td><td class="col-proj">6928</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
-        <tr class="t-montaz has-op-none"><td class="col-time">08:00–20:00</td><td class="col-event">Montaże NFM — Tobaro</td><td class="col-sala">Green Room</td><td class="col-proj">6926</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
-        <tr class="t-montaz has-op-none"><td class="col-time">08:00–20:00</td><td class="col-event">Montaże NFM — Nowicki Duo</td><td class="col-sala">VIP Room (+1)</td><td class="col-proj">6924</td><td class="col-prod">Le Karolina</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
-        <tr class="t-montaz has-op-none"><td class="col-time">08:00–20:00</td><td class="col-event">Montaże NFM — flow unit</td><td class="col-sala">Foyer +2</td><td class="col-proj">6925</td><td class="col-prod">Le Karolina</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
-        <tr class="t-garderoba has-op-none"><td class="col-time">08:00–21:00</td><td class="col-event">Garderoba — Paterson (2.01) + Długosz (2.07)</td><td class="col-sala">2.01 / 2.07</td><td class="col-proj">6912</td><td class="col-prod">—</td><td class="col-presence">—</td><td class="col-op"><span class="op none">—</span></td></tr>
-        <tr class="t-garderoba has-op-none"><td class="col-time">09:00–21:00</td><td class="col-event">Garderoba — Chór NFM (1.01/1.11/1.12)</td><td class="col-sala">garderoby</td><td class="col-proj">6914</td><td class="col-prod">Zielańska Pola</td><td class="col-presence">—</td><td class="col-op"><span class="op none">—</span></td></tr>
-        <tr class="t-anulowane has-op-none"><td class="col-time">09:30–12:45</td><td class="col-event">Próba FW (ANULOWANA)</td><td class="col-sala">Sala Główna ORLEN</td><td class="col-proj">6912</td><td class="col-prod">—</td><td class="col-presence">pominąć</td><td class="col-op"><span class="op none">—</span></td></tr>
-        <tr class="t-proba has-op-michal"><td class="col-time">10:00–21:00</td><td class="col-event"><span class="type-tag tag-proba">Próba</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13822" target="_blank" rel="noopener"><strong>Random Check</strong></a></td><td class="col-sala">Sala Czerwona NFM</td><td class="col-proj">6914</td><td class="col-prod">Zielańska Pola</td><td class="col-presence required">TAK (min. 1 godz.)</td><td class="col-op"><span class="op michal">Michał</span></td></tr>
-        <tr class="t-soundcheck has-op-both"><td class="col-time">14:00–15:00</td><td class="col-event"><span class="type-tag tag-proba">Soundcheck</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13434" target="_blank" rel="noopener"><strong>OMN — Zoom in/zoom out</strong></a><a class="note-marker" href="#note-zoom" title="Uwagi producenta">!</a></td><td class="col-sala">Sala Główna ORLEN</td><td class="col-proj">6928</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence required">TAK</td><td class="col-op"><span class="op both">Michał + Zbigniew</span></td></tr>
-        <tr class="t-proba has-op-both"><td class="col-time">15:00–19:00</td><td class="col-event"><span class="type-tag tag-proba">Próba</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13434" target="_blank" rel="noopener"><strong>Zoom in / zoom out</strong></a><a class="note-marker" href="#note-zoom" title="Uwagi producenta">!</a></td><td class="col-sala">Sala Główna ORLEN</td><td class="col-proj">6928</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence required">TAK (min. 1 godz.)</td><td class="col-op"><span class="op both">Michał + Zbigniew</span></td></tr>
-        <tr class="t-koncert has-op-both"><td class="col-time">20:00–22:00</td><td class="col-event"><span class="type-tag tag-koncert">Koncert</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13434" target="_blank" rel="noopener"><strong>Zoom In // Zoom Out</strong></a> — S. Bywalec / OMN <em>(wyprzedane)</em><a class="note-marker" href="#note-zoom" title="Uwagi producenta">!</a></td><td class="col-sala">Sala Główna ORLEN</td><td class="col-proj">6928</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence required">TAK</td><td class="col-op"><span class="op both">Michał + Zbigniew</span></td></tr>
-        <tr class="t-poza has-op-michal"><td class="col-time">22:00</td><td class="col-event"><span class="type-tag tag-poza">Poza NFM</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13785" target="_blank" rel="noopener">Pomieszanie Zmysłów — set 1 (Romańczuk / Zemla)</a></td><td class="col-sala"><a class="event-link" href="https://www.google.com/maps/search/?api=1&query=Galeria+Toy+Piano+Ruska+46a+Wroc%C5%82aw" target="_blank" rel="noopener">Galeria Toy Piano (Wrocław) ↗</a></td><td class="col-proj">—</td><td class="col-prod">NFM</td><td class="col-presence required">TAK, zostać na 2 sety</td><td class="col-op"><span class="op michal">Michał</span></td></tr>
-        <tr class="t-poza has-op-michal"><td class="col-time">22:20</td><td class="col-event"><span class="type-tag tag-poza">Poza NFM</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13793" target="_blank" rel="noopener">Pomieszanie Zmysłów — set 2</a></td><td class="col-sala"><a class="event-link" href="https://www.google.com/maps/search/?api=1&query=Galeria+Toy+Piano+Ruska+46a+Wroc%C5%82aw" target="_blank" rel="noopener">Galeria Toy Piano (Wrocław) ↗</a></td><td class="col-proj">—</td><td class="col-prod">NFM</td><td class="col-presence required">TAK, zostać na 2 sety</td><td class="col-op"><span class="op michal">Michał</span></td></tr>
-        <tr class="t-poza has-op-zbigniew"><td class="col-time">22:30</td><td class="col-event"><span class="type-tag tag-poza">Poza NFM</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13787" target="_blank" rel="noopener"><strong>Koncert (afterparty): Kuba Sojka w Recepcji</strong></a></td><td class="col-sala"><a class="event-link" href="https://www.google.com/maps/search/?api=1&query=Klubokawiarnia+Recepcja+Ruska+46+Wroc%C5%82aw" target="_blank" rel="noopener">Klubokawiarnia Recepcja (Wrocław) ↗</a></td><td class="col-proj">6938</td><td class="col-prod">Gbyl-Stojek Patrycja</td><td class="col-presence">wpaść (min. 30 min)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
-        <tr class="t-poza has-op-none"><td class="col-time">22:40</td><td class="col-event"><span class="type-tag tag-poza">Poza NFM</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13794" target="_blank" rel="noopener">Pomieszanie Zmysłów — set 3</a></td><td class="col-sala"><a class="event-link" href="https://www.google.com/maps/search/?api=1&query=Galeria+Toy+Piano+Ruska+46a+Wroc%C5%82aw" target="_blank" rel="noopener">Galeria Toy Piano (Wrocław) ↗</a></td><td class="col-proj">—</td><td class="col-prod">NFM</td><td class="col-presence">nie wymagana (opcjonalnie)</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-montaz has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-001"><label for="done-001" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">04:00–10:00</td><td class="col-event">Montaż LED — Random Check</td><td class="col-sala">Sala Czerwona NFM</td><td class="col-proj">6914</td><td class="col-prod">Zielańska Pola</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-montaz has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-002"><label for="done-002" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">08:00–14:00</td><td class="col-event">Montaże NFM — Zoom in/zoom out</td><td class="col-sala">Sala Główna ORLEN</td><td class="col-proj">6928</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-montaz has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-003"><label for="done-003" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">08:00–20:00</td><td class="col-event">Montaże NFM — Tobaro</td><td class="col-sala">Green Room</td><td class="col-proj">6926</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-montaz has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-004"><label for="done-004" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">08:00–20:00</td><td class="col-event">Montaże NFM — Nowicki Duo</td><td class="col-sala">VIP Room (+1)</td><td class="col-proj">6924</td><td class="col-prod">Le Karolina</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-montaz has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-005"><label for="done-005" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">08:00–20:00</td><td class="col-event">Montaże NFM — flow unit</td><td class="col-sala">Foyer +2</td><td class="col-proj">6925</td><td class="col-prod">Le Karolina</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-garderoba has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-006"><label for="done-006" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">08:00–21:00</td><td class="col-event">Garderoba — Paterson (2.01) + Długosz (2.07)</td><td class="col-sala">2.01 / 2.07</td><td class="col-proj">6912</td><td class="col-prod">—</td><td class="col-presence">—</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-garderoba has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-007"><label for="done-007" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">09:00–21:00</td><td class="col-event">Garderoba — Chór NFM (1.01/1.11/1.12)</td><td class="col-sala">garderoby</td><td class="col-proj">6914</td><td class="col-prod">Zielańska Pola</td><td class="col-presence">—</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-anulowane has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-008"><label for="done-008" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">09:30–12:45</td><td class="col-event">Próba FW (ANULOWANA)</td><td class="col-sala">Sala Główna ORLEN</td><td class="col-proj">6912</td><td class="col-prod">—</td><td class="col-presence">pominąć</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-proba has-op-michal"><td class="col-done"><input type="checkbox" class="done-cb" id="done-009"><label for="done-009" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">10:00–21:00</td><td class="col-event"><span class="type-tag tag-proba">Próba</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13822" target="_blank" rel="noopener"><strong>Random Check</strong></a></td><td class="col-sala">Sala Czerwona NFM</td><td class="col-proj">6914</td><td class="col-prod">Zielańska Pola</td><td class="col-presence required">TAK (min. 1 godz.)</td><td class="col-op"><span class="op michal">Michał</span></td></tr>
+        <tr class="t-soundcheck has-op-both"><td class="col-done"><input type="checkbox" class="done-cb" id="done-010"><label for="done-010" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">14:00–15:00</td><td class="col-event"><span class="type-tag tag-proba">Soundcheck</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13434" target="_blank" rel="noopener"><strong>OMN — Zoom in/zoom out</strong></a><a class="note-marker" href="#note-zoom" title="Uwagi producenta">!</a></td><td class="col-sala">Sala Główna ORLEN</td><td class="col-proj">6928</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence required">TAK</td><td class="col-op"><span class="op both">Michał + Zbigniew</span></td></tr>
+        <tr class="t-proba has-op-both"><td class="col-done"><input type="checkbox" class="done-cb" id="done-011"><label for="done-011" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">15:00–19:00</td><td class="col-event"><span class="type-tag tag-proba">Próba</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13434" target="_blank" rel="noopener"><strong>Zoom in / zoom out</strong></a><a class="note-marker" href="#note-zoom" title="Uwagi producenta">!</a></td><td class="col-sala">Sala Główna ORLEN</td><td class="col-proj">6928</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence required">TAK (min. 1 godz.)</td><td class="col-op"><span class="op both">Michał + Zbigniew</span></td></tr>
+        <tr class="t-koncert has-op-both"><td class="col-done"><input type="checkbox" class="done-cb" id="done-012"><label for="done-012" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">20:00–22:00</td><td class="col-event"><span class="type-tag tag-koncert">Koncert</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13434" target="_blank" rel="noopener"><strong>Zoom In // Zoom Out</strong></a> — S. Bywalec / OMN <em>(wyprzedane)</em><a class="note-marker" href="#note-zoom" title="Uwagi producenta">!</a></td><td class="col-sala">Sala Główna ORLEN</td><td class="col-proj">6928</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence required">TAK</td><td class="col-op"><span class="op both">Michał + Zbigniew</span></td></tr>
+        <tr class="t-poza has-op-michal"><td class="col-done"><input type="checkbox" class="done-cb" id="done-013"><label for="done-013" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">22:00</td><td class="col-event"><span class="type-tag tag-poza">Poza NFM</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13785" target="_blank" rel="noopener">Pomieszanie Zmysłów — set 1 (Romańczuk / Zemla)</a></td><td class="col-sala"><a class="event-link" href="https://www.google.com/maps/search/?api=1&query=Galeria+Toy+Piano+Ruska+46a+Wroc%C5%82aw" target="_blank" rel="noopener">Galeria Toy Piano (Wrocław) ↗</a></td><td class="col-proj">—</td><td class="col-prod">NFM</td><td class="col-presence required">TAK, zostać na 2 sety</td><td class="col-op"><span class="op michal">Michał</span></td></tr>
+        <tr class="t-poza has-op-michal"><td class="col-done"><input type="checkbox" class="done-cb" id="done-014"><label for="done-014" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">22:20</td><td class="col-event"><span class="type-tag tag-poza">Poza NFM</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13793" target="_blank" rel="noopener">Pomieszanie Zmysłów — set 2</a></td><td class="col-sala"><a class="event-link" href="https://www.google.com/maps/search/?api=1&query=Galeria+Toy+Piano+Ruska+46a+Wroc%C5%82aw" target="_blank" rel="noopener">Galeria Toy Piano (Wrocław) ↗</a></td><td class="col-proj">—</td><td class="col-prod">NFM</td><td class="col-presence required">TAK, zostać na 2 sety</td><td class="col-op"><span class="op michal">Michał</span></td></tr>
+        <tr class="t-poza has-op-zbigniew"><td class="col-done"><input type="checkbox" class="done-cb" id="done-015"><label for="done-015" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">22:30</td><td class="col-event"><span class="type-tag tag-poza">Poza NFM</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13787" target="_blank" rel="noopener"><strong>Koncert (afterparty): Kuba Sojka w Recepcji</strong></a></td><td class="col-sala"><a class="event-link" href="https://www.google.com/maps/search/?api=1&query=Klubokawiarnia+Recepcja+Ruska+46+Wroc%C5%82aw" target="_blank" rel="noopener">Klubokawiarnia Recepcja (Wrocław) ↗</a></td><td class="col-proj">6938</td><td class="col-prod">Gbyl-Stojek Patrycja</td><td class="col-presence">wpaść (min. 30 min)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-poza has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-016"><label for="done-016" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">22:40</td><td class="col-event"><span class="type-tag tag-poza">Poza NFM</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13794" target="_blank" rel="noopener">Pomieszanie Zmysłów — set 3</a></td><td class="col-sala"><a class="event-link" href="https://www.google.com/maps/search/?api=1&query=Galeria+Toy+Piano+Ruska+46a+Wroc%C5%82aw" target="_blank" rel="noopener">Galeria Toy Piano (Wrocław) ↗</a></td><td class="col-proj">—</td><td class="col-prod">NFM</td><td class="col-presence">nie wymagana (opcjonalnie)</td><td class="col-op"><span class="op none">—</span></td></tr>
       </tbody>
     </table>
   </div>
@@ -993,7 +1111,7 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
     <table class="schedule">
       <thead>
         <tr>
-          <th class="col-time">Godziny</th>
+          <th class="col-done" aria-label="Zaliczone"></th><th class="col-time">Godziny</th>
           <th class="col-event">Wydarzenie</th>
           <th class="col-sala">Sala</th>
           <th class="col-proj">Projekt</th>
@@ -1003,46 +1121,46 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
         </tr>
       </thead>
       <tbody>
-        <tr class="t-montaz has-op-none"><td class="col-time">06:30–09:30</td><td class="col-event">Strojenie organów — Światło//Cień</td><td class="col-sala">Sala Główna ORLEN</td><td class="col-proj">6912</td><td class="col-prod">Kruszyńska Joanna</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
-        <tr class="t-montaz has-op-none"><td class="col-time">08:00–12:00</td><td class="col-event">Montaże NFM — Tobaro</td><td class="col-sala">Green Room</td><td class="col-proj">6926</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
-        <tr class="t-montaz has-op-none"><td class="col-time">08:00–12:00</td><td class="col-event">Montaże NFM — Surface of Timbre</td><td class="col-sala">Sala Kameralna NFM</td><td class="col-proj">6927</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
-        <tr class="t-montaz has-op-none"><td class="col-time">08:00–12:00</td><td class="col-event">Montaże NFM — Nowicki Duo</td><td class="col-sala">VIP Room (+1)</td><td class="col-proj">6924</td><td class="col-prod">Le Karolina</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
-        <tr class="t-montaz has-op-none"><td class="col-time">08:00–12:00</td><td class="col-event">Montaże NFM — flow unit</td><td class="col-sala">Foyer +2</td><td class="col-proj">6925</td><td class="col-prod">Le Karolina</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
-        <tr class="t-proba has-op-zbigniew"><td class="col-time">09:00–16:30</td><td class="col-event"><span class="type-tag tag-proba">Próba</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13822" target="_blank" rel="noopener"><strong>Random Check</strong></a></td><td class="col-sala">Sala Czerwona NFM</td><td class="col-proj">6914</td><td class="col-prod">Zielańska Pola</td><td class="col-presence required">TAK (od 13:00 min. 1 godz.)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
-        <tr class="t-proba has-op-michal"><td class="col-time">10:00–12:45</td><td class="col-event"><span class="type-tag tag-proba">Próba gen.</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13449" target="_blank" rel="noopener"><strong>Światło // Cień // Światłocień</strong></a></td><td class="col-sala">Sala Główna ORLEN</td><td class="col-proj">6912</td><td class="col-prod">Kruszyńska Joanna</td><td class="col-presence required">TAK</td><td class="col-op"><span class="op michal">Michał</span></td></tr>
-        <tr class="t-montaz has-op-none"><td class="col-time">13:15–13:45</td><td class="col-event">Rozładunek na rampie — Nowicki Duo</td><td class="col-sala">Rampa</td><td class="col-proj">6924</td><td class="col-prod">Le Karolina</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
-        <tr class="t-montaz has-op-none"><td class="col-time">14:00–14:30</td><td class="col-event">Set-up — flow unit</td><td class="col-sala">Foyer +2</td><td class="col-proj">6925</td><td class="col-prod">Le Karolina</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
-        <tr class="t-montaz has-op-none"><td class="col-time">14:00–15:30</td><td class="col-event">Set-up — Nowicki Duo</td><td class="col-sala">VIP Room (+1)</td><td class="col-proj">6924</td><td class="col-prod">Le Karolina</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
-        <tr class="t-proba has-op-zbigniew"><td class="col-time">14:30–15:15</td><td class="col-event"><span class="type-tag tag-proba">Próba</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13821" target="_blank" rel="noopener"><strong>flow unit</strong></a> — soundcheck + próba</td><td class="col-sala">Foyer +2</td><td class="col-proj">6925</td><td class="col-prod">Le Karolina</td><td class="col-presence required">TAK (45 min — wyjątek)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
-        <tr class="t-montaz has-op-none"><td class="col-time">12:00–15:30</td><td class="col-event">Montaże JP — Surface of Timbre</td><td class="col-sala">Sala Kameralna NFM</td><td class="col-proj">6927</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
-        <tr class="t-soundcheck has-op-michal"><td class="col-time">13:00–14:00</td><td class="col-event"><span class="type-tag tag-proba">Soundcheck</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13819" target="_blank" rel="noopener"><strong>CARDIO fitness</strong></a><a class="note-marker" href="#note-cardio" title="Uwagi producenta">!</a></td><td class="col-sala">Foyer -1</td><td class="col-proj">6919</td><td class="col-prod">Muszkieta Jacek</td><td class="col-presence required">TAK</td><td class="col-op"><span class="op michal">Michał</span></td></tr>
-        <tr class="t-proba has-op-michal"><td class="col-time">14:00–15:00</td><td class="col-event"><span class="type-tag tag-proba">Próba</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13819" target="_blank" rel="noopener"><strong>CARDIO fitness</strong></a><a class="note-marker" href="#note-cardio" title="Uwagi producenta">!</a></td><td class="col-sala">Foyer -1</td><td class="col-proj">6919</td><td class="col-prod">Muszkieta Jacek</td><td class="col-presence required">TAK</td><td class="col-op"><span class="op michal">Michał</span></td></tr>
-        <tr class="t-proba has-op-none"><td class="col-time">15:15</td><td class="col-event"><span class="type-tag tag-proba" style="background:#ffd54a;color:#5c4a10;">Wywiad</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13819" target="_blank" rel="noopener"><strong>CARDIO Fitness</strong></a> — wywiad TVP Kultura<a class="note-marker" href="#note-cardio" title="Uwagi producenta">!</a></td><td class="col-sala">Foyer -1</td><td class="col-proj">6919</td><td class="col-prod">Muszkieta Jacek</td><td class="col-presence">do realizacji przez TVP</td><td class="col-op"><span class="op none">—</span></td></tr>
-        <tr class="t-proba has-op-zbigniew"><td class="col-time">15:30–17:00</td><td class="col-event"><span class="type-tag tag-proba">Próba</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13823" target="_blank" rel="noopener"><strong>Nowicki Duo</strong></a> — soundcheck + próba</td><td class="col-sala">VIP Room (+1)</td><td class="col-proj">6924</td><td class="col-prod">Le Karolina</td><td class="col-presence required">TAK (min. 45 min)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
-        <tr class="t-przerwa has-op-none"><td class="col-time">15:00–15:40</td><td class="col-event">Przerwa obiadowa dla techniki</td><td class="col-sala">—</td><td class="col-proj">—</td><td class="col-prod">—</td><td class="col-presence">—</td><td class="col-op"><span class="op none">—</span></td></tr>
-        <tr class="t-koncert has-op-michal"><td class="col-time">16:00–16:45</td><td class="col-event"><span class="type-tag tag-koncert">Koncert</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13819" target="_blank" rel="noopener"><strong>CARDIO Fitness</strong></a> (set I)<a class="note-marker" href="#note-cardio" title="Uwagi producenta">!</a></td><td class="col-sala">Foyer -1</td><td class="col-proj">6919</td><td class="col-prod">Muszkieta Jacek</td><td class="col-presence required">TAK</td><td class="col-op"><span class="op michal">Michał</span></td></tr>
-        <tr class="t-koncert has-op-zbigniew"><td class="col-time">16:00–17:30</td><td class="col-event"><span class="type-tag tag-koncert">Koncert</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13818" target="_blank" rel="noopener"><strong>Tobaro</strong></a> // Galeria Dźwięków (blok I)</td><td class="col-sala">Green Room</td><td class="col-proj">6926</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence required">TAK (chwilę)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
-        <tr class="t-koncert has-op-zbigniew"><td class="col-time">16:00–23:00</td><td class="col-event"><span class="type-tag tag-koncert">Instalacja</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13822" target="_blank" rel="noopener"><strong>Random Check 8 | UN-ORGANIC</strong></a> (instalacja ciągła)</td><td class="col-sala">Sala Czerwona NFM</td><td class="col-proj">6914</td><td class="col-prod">Zielańska Pola</td><td class="col-presence required">TAK (chwilę)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
-        <tr class="t-koncert has-op-none"><td class="col-time">16:45</td><td class="col-event"><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13910" target="_blank" rel="noopener">Strefa Ruchu — debata (Ruch Muzyczny)</a></td><td class="col-sala">Foyer -1, czerwone kanapy</td><td class="col-proj">—</td><td class="col-prod">NFM</td><td class="col-presence">opcjonalnie</td><td class="col-op"><span class="op none">—</span></td></tr>
-        <tr class="t-koncert has-op-zbigniew"><td class="col-time">17:30</td><td class="col-event"><span class="type-tag tag-koncert">Koncert</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13812" target="_blank" rel="noopener"><strong>Surface of Timbre</strong></a> (set I) // Galeria Dźwięków</td><td class="col-sala">Sala Kameralna NFM</td><td class="col-proj">6927</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence required">TAK (chwilę)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
-        <tr class="t-koncert has-op-michal"><td class="col-time">18:00–20:15</td><td class="col-event"><span class="type-tag tag-koncert">Koncert</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13449" target="_blank" rel="noopener"><strong>Światło // Cień // Światłocień</strong></a> (Długosz / Paterson)</td><td class="col-sala">Sala Główna ORLEN</td><td class="col-proj">6912</td><td class="col-prod">Kruszyńska Joanna</td><td class="col-presence required">TAK</td><td class="col-op"><span class="op michal">Michał</span></td></tr>
-        <tr class="t-koncert has-op-zbigniew"><td class="col-time">18:00</td><td class="col-event"><span class="type-tag tag-koncert">Koncert</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13817" target="_blank" rel="noopener"><strong>Fangor_M</strong></a> (set I) — Aleksander Wnuk / perkusja</td><td class="col-sala">Foyer +3</td><td class="col-proj">—</td><td class="col-prod">(brak iKsoris)</td><td class="col-presence required">TAK (chwilę, wybrać set)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
-        <tr class="t-koncert has-op-zbigniew"><td class="col-time">18:00–18:30</td><td class="col-event"><span class="type-tag tag-koncert">Koncert</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13823" target="_blank" rel="noopener"><strong>Z(a)mysły</strong></a> (set I) = Nowicki Duo</td><td class="col-sala">VIP Room (+1)</td><td class="col-proj">6924</td><td class="col-prod">Le Karolina</td><td class="col-presence required">TAK (chwilę, wybrać set)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
-        <tr class="t-koncert has-op-zbigniew"><td class="col-time">18:30–19:00</td><td class="col-event"><span class="type-tag tag-koncert">Koncert</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13821" target="_blank" rel="noopener"><strong>Ry(t)my // Pieśni</strong></a> (set I) = flow unit</td><td class="col-sala">Foyer +2</td><td class="col-proj">6925</td><td class="col-prod">Le Karolina</td><td class="col-presence required">TAK (chwilę, wybrać set)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
-        <tr class="t-koncert has-op-zbigniew"><td class="col-time">18:30</td><td class="col-event"><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13812" target="_blank" rel="noopener">Surface of Timbre (set II)</a></td><td class="col-sala">Sala Kameralna NFM</td><td class="col-proj">6927</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence">(jako set I)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
-        <tr class="t-koncert has-op-zbigniew"><td class="col-time">19:00–23:00</td><td class="col-event"><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13818" target="_blank" rel="noopener">Tobaro // Galeria Dźwięków (blok II)</a></td><td class="col-sala">Green Room</td><td class="col-proj">6926</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence">(jako blok I)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
-        <tr class="t-koncert has-op-zbigniew"><td class="col-time">19:00–19:45</td><td class="col-event"><span class="type-tag tag-koncert">Koncert</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13819" target="_blank" rel="noopener"><strong>CARDIO Fitness</strong></a> (set II)<a class="note-marker" href="#note-cardio" title="Uwagi producenta">!</a></td><td class="col-sala">Foyer -1</td><td class="col-proj">6919</td><td class="col-prod">Muszkieta Jacek</td><td class="col-presence">TAK (lub set I/III)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
-        <tr class="t-koncert has-op-zbigniew"><td class="col-time">19:30–20:00</td><td class="col-event"><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13823" target="_blank" rel="noopener">Z(a)mysły (set II) — Nowicki Duo</a></td><td class="col-sala">VIP Room (+1)</td><td class="col-proj">6924</td><td class="col-prod">Le Karolina</td><td class="col-presence">(jako set I)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
-        <tr class="t-koncert has-op-zbigniew"><td class="col-time">20:00–20:30</td><td class="col-event"><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13821" target="_blank" rel="noopener">Ry(t)my // Pieśni (set II) — flow unit</a></td><td class="col-sala">Foyer +2</td><td class="col-proj">6925</td><td class="col-prod">Le Karolina</td><td class="col-presence">(jako set I)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
-        <tr class="t-koncert has-op-zbigniew"><td class="col-time">20:00</td><td class="col-event"><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13812" target="_blank" rel="noopener">Surface of Timbre (set III)</a></td><td class="col-sala">Sala Kameralna NFM</td><td class="col-proj">6927</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence">(jako set I)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
-        <tr class="t-koncert has-op-zbigniew"><td class="col-time">20:30</td><td class="col-event"><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13817" target="_blank" rel="noopener">Fangor_M (set II)</a></td><td class="col-sala">Foyer +3</td><td class="col-proj">—</td><td class="col-prod">—</td><td class="col-presence">(jako set I)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
-        <tr class="t-koncert has-op-zbigniew"><td class="col-time">20:30–21:00</td><td class="col-event"><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13823" target="_blank" rel="noopener">Z(a)mysły (set III) — Nowicki Duo</a></td><td class="col-sala">VIP Room (+1)</td><td class="col-proj">6924</td><td class="col-prod">Le Karolina</td><td class="col-presence">(jako set I)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
-        <tr class="t-koncert has-op-michal"><td class="col-time">20:30–22:00</td><td class="col-event"><span class="type-tag tag-koncert">Koncert</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13528" target="_blank" rel="noopener"><strong>Galeria Dźwięków / wykłady audio</strong></a> — Noc Muzeów</td><td class="col-sala">Sala Główna ORLEN</td><td class="col-proj">6913</td><td class="col-prod">(brak)</td><td class="col-presence">TAK (jeśli zostaje moc)</td><td class="col-op"><span class="op michal">Michał</span></td></tr>
-        <tr class="t-koncert has-op-zbigniew"><td class="col-time">21:00–21:45</td><td class="col-event"><span class="type-tag tag-koncert">Koncert</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13819" target="_blank" rel="noopener"><strong>CARDIO Fitness</strong></a> (set III)<a class="note-marker" href="#note-cardio" title="Uwagi producenta">!</a></td><td class="col-sala">Foyer -1</td><td class="col-proj">6919</td><td class="col-prod">Muszkieta Jacek</td><td class="col-presence">TAK (lub set I/II)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
-        <tr class="t-koncert has-op-zbigniew"><td class="col-time">22:00–22:30</td><td class="col-event"><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13821" target="_blank" rel="noopener">Ry(t)my // Pieśni (set III) — flow unit</a></td><td class="col-sala">Foyer +2</td><td class="col-proj">6925</td><td class="col-prod">Le Karolina</td><td class="col-presence">(jako set I)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
-        <tr class="t-koncert has-op-zbigniew"><td class="col-time">22:30</td><td class="col-event"><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13817" target="_blank" rel="noopener">Fangor_M (set III)</a></td><td class="col-sala">Foyer +3</td><td class="col-proj">—</td><td class="col-prod">—</td><td class="col-presence">(jako set I)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
-        <tr class="t-demontaz has-op-none"><td class="col-time">23:00–01:00</td><td class="col-event">Demontaże (Tobaro, Surface, Nowicki, flow unit)</td><td class="col-sala">—</td><td class="col-proj">6924/25/26/27</td><td class="col-prod">—</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
-        <tr class="t-demontaz has-op-none"><td class="col-time">23:00–03:00</td><td class="col-event">Demontaż — Random Check</td><td class="col-sala">Sala Czerwona NFM</td><td class="col-proj">6914</td><td class="col-prod">—</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-montaz has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-017"><label for="done-017" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">06:30–09:30</td><td class="col-event">Strojenie organów — Światło//Cień</td><td class="col-sala">Sala Główna ORLEN</td><td class="col-proj">6912</td><td class="col-prod">Kruszyńska Joanna</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-montaz has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-018"><label for="done-018" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">08:00–12:00</td><td class="col-event">Montaże NFM — Tobaro</td><td class="col-sala">Green Room</td><td class="col-proj">6926</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-montaz has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-019"><label for="done-019" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">08:00–12:00</td><td class="col-event">Montaże NFM — Surface of Timbre</td><td class="col-sala">Sala Kameralna NFM</td><td class="col-proj">6927</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-montaz has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-020"><label for="done-020" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">08:00–12:00</td><td class="col-event">Montaże NFM — Nowicki Duo</td><td class="col-sala">VIP Room (+1)</td><td class="col-proj">6924</td><td class="col-prod">Le Karolina</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-montaz has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-021"><label for="done-021" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">08:00–12:00</td><td class="col-event">Montaże NFM — flow unit</td><td class="col-sala">Foyer +2</td><td class="col-proj">6925</td><td class="col-prod">Le Karolina</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-proba has-op-zbigniew"><td class="col-done"><input type="checkbox" class="done-cb" id="done-022"><label for="done-022" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">09:00–16:30</td><td class="col-event"><span class="type-tag tag-proba">Próba</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13822" target="_blank" rel="noopener"><strong>Random Check</strong></a></td><td class="col-sala">Sala Czerwona NFM</td><td class="col-proj">6914</td><td class="col-prod">Zielańska Pola</td><td class="col-presence required">TAK (od 13:00 min. 1 godz.)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-proba has-op-michal"><td class="col-done"><input type="checkbox" class="done-cb" id="done-023"><label for="done-023" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">10:00–12:45</td><td class="col-event"><span class="type-tag tag-proba">Próba gen.</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13449" target="_blank" rel="noopener"><strong>Światło // Cień // Światłocień</strong></a></td><td class="col-sala">Sala Główna ORLEN</td><td class="col-proj">6912</td><td class="col-prod">Kruszyńska Joanna</td><td class="col-presence required">TAK</td><td class="col-op"><span class="op michal">Michał</span></td></tr>
+        <tr class="t-montaz has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-024"><label for="done-024" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">13:15–13:45</td><td class="col-event">Rozładunek na rampie — Nowicki Duo</td><td class="col-sala">Rampa</td><td class="col-proj">6924</td><td class="col-prod">Le Karolina</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-montaz has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-025"><label for="done-025" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">14:00–14:30</td><td class="col-event">Set-up — flow unit</td><td class="col-sala">Foyer +2</td><td class="col-proj">6925</td><td class="col-prod">Le Karolina</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-montaz has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-026"><label for="done-026" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">14:00–15:30</td><td class="col-event">Set-up — Nowicki Duo</td><td class="col-sala">VIP Room (+1)</td><td class="col-proj">6924</td><td class="col-prod">Le Karolina</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-proba has-op-zbigniew"><td class="col-done"><input type="checkbox" class="done-cb" id="done-027"><label for="done-027" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">14:30–15:15</td><td class="col-event"><span class="type-tag tag-proba">Próba</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13821" target="_blank" rel="noopener"><strong>flow unit</strong></a> — soundcheck + próba</td><td class="col-sala">Foyer +2</td><td class="col-proj">6925</td><td class="col-prod">Le Karolina</td><td class="col-presence required">TAK (45 min — wyjątek)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-montaz has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-028"><label for="done-028" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">12:00–15:30</td><td class="col-event">Montaże JP — Surface of Timbre</td><td class="col-sala">Sala Kameralna NFM</td><td class="col-proj">6927</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-soundcheck has-op-michal"><td class="col-done"><input type="checkbox" class="done-cb" id="done-029"><label for="done-029" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">13:00–14:00</td><td class="col-event"><span class="type-tag tag-proba">Soundcheck</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13819" target="_blank" rel="noopener"><strong>CARDIO fitness</strong></a><a class="note-marker" href="#note-cardio" title="Uwagi producenta">!</a></td><td class="col-sala">Foyer -1</td><td class="col-proj">6919</td><td class="col-prod">Muszkieta Jacek</td><td class="col-presence required">TAK</td><td class="col-op"><span class="op michal">Michał</span></td></tr>
+        <tr class="t-proba has-op-michal"><td class="col-done"><input type="checkbox" class="done-cb" id="done-030"><label for="done-030" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">14:00–15:00</td><td class="col-event"><span class="type-tag tag-proba">Próba</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13819" target="_blank" rel="noopener"><strong>CARDIO fitness</strong></a><a class="note-marker" href="#note-cardio" title="Uwagi producenta">!</a></td><td class="col-sala">Foyer -1</td><td class="col-proj">6919</td><td class="col-prod">Muszkieta Jacek</td><td class="col-presence required">TAK</td><td class="col-op"><span class="op michal">Michał</span></td></tr>
+        <tr class="t-proba has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-031"><label for="done-031" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">15:15</td><td class="col-event"><span class="type-tag tag-proba" style="background:#ffd54a;color:#5c4a10;">Wywiad</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13819" target="_blank" rel="noopener"><strong>CARDIO Fitness</strong></a> — wywiad TVP Kultura<a class="note-marker" href="#note-cardio" title="Uwagi producenta">!</a></td><td class="col-sala">Foyer -1</td><td class="col-proj">6919</td><td class="col-prod">Muszkieta Jacek</td><td class="col-presence">do realizacji przez TVP</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-proba has-op-zbigniew"><td class="col-done"><input type="checkbox" class="done-cb" id="done-032"><label for="done-032" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">15:30–17:00</td><td class="col-event"><span class="type-tag tag-proba">Próba</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13823" target="_blank" rel="noopener"><strong>Nowicki Duo</strong></a> — soundcheck + próba</td><td class="col-sala">VIP Room (+1)</td><td class="col-proj">6924</td><td class="col-prod">Le Karolina</td><td class="col-presence required">TAK (min. 45 min)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-przerwa has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-033"><label for="done-033" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">15:00–15:40</td><td class="col-event">Przerwa obiadowa dla techniki</td><td class="col-sala">—</td><td class="col-proj">—</td><td class="col-prod">—</td><td class="col-presence">—</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-koncert has-op-michal"><td class="col-done"><input type="checkbox" class="done-cb" id="done-034"><label for="done-034" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">16:00–16:45</td><td class="col-event"><span class="type-tag tag-koncert">Koncert</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13819" target="_blank" rel="noopener"><strong>CARDIO Fitness</strong></a> (set I)<a class="note-marker" href="#note-cardio" title="Uwagi producenta">!</a></td><td class="col-sala">Foyer -1</td><td class="col-proj">6919</td><td class="col-prod">Muszkieta Jacek</td><td class="col-presence required">TAK</td><td class="col-op"><span class="op michal">Michał</span></td></tr>
+        <tr class="t-koncert has-op-zbigniew"><td class="col-done"><input type="checkbox" class="done-cb" id="done-035"><label for="done-035" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">16:00–17:30</td><td class="col-event"><span class="type-tag tag-koncert">Koncert</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13818" target="_blank" rel="noopener"><strong>Tobaro</strong></a> // Galeria Dźwięków (blok I)</td><td class="col-sala">Green Room</td><td class="col-proj">6926</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence required">TAK (chwilę)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-koncert has-op-zbigniew"><td class="col-done"><input type="checkbox" class="done-cb" id="done-036"><label for="done-036" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">16:00–23:00</td><td class="col-event"><span class="type-tag tag-koncert">Instalacja</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13822" target="_blank" rel="noopener"><strong>Random Check 8 | UN-ORGANIC</strong></a> (instalacja ciągła)</td><td class="col-sala">Sala Czerwona NFM</td><td class="col-proj">6914</td><td class="col-prod">Zielańska Pola</td><td class="col-presence required">TAK (chwilę)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-koncert has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-037"><label for="done-037" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">16:45</td><td class="col-event"><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13910" target="_blank" rel="noopener">Strefa Ruchu — debata (Ruch Muzyczny)</a></td><td class="col-sala">Foyer -1, czerwone kanapy</td><td class="col-proj">—</td><td class="col-prod">NFM</td><td class="col-presence">opcjonalnie</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-koncert has-op-zbigniew"><td class="col-done"><input type="checkbox" class="done-cb" id="done-038"><label for="done-038" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">17:30</td><td class="col-event"><span class="type-tag tag-koncert">Koncert</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13812" target="_blank" rel="noopener"><strong>Surface of Timbre</strong></a> (set I) // Galeria Dźwięków</td><td class="col-sala">Sala Kameralna NFM</td><td class="col-proj">6927</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence required">TAK (chwilę)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-koncert has-op-michal"><td class="col-done"><input type="checkbox" class="done-cb" id="done-039"><label for="done-039" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">18:00–20:15</td><td class="col-event"><span class="type-tag tag-koncert">Koncert</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13449" target="_blank" rel="noopener"><strong>Światło // Cień // Światłocień</strong></a> (Długosz / Paterson)</td><td class="col-sala">Sala Główna ORLEN</td><td class="col-proj">6912</td><td class="col-prod">Kruszyńska Joanna</td><td class="col-presence required">TAK</td><td class="col-op"><span class="op michal">Michał</span></td></tr>
+        <tr class="t-koncert has-op-zbigniew"><td class="col-done"><input type="checkbox" class="done-cb" id="done-040"><label for="done-040" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">18:00</td><td class="col-event"><span class="type-tag tag-koncert">Koncert</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13817" target="_blank" rel="noopener"><strong>Fangor_M</strong></a> (set I) — Aleksander Wnuk / perkusja</td><td class="col-sala">Foyer +3</td><td class="col-proj">—</td><td class="col-prod">(brak iKsoris)</td><td class="col-presence required">TAK (chwilę, wybrać set)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-koncert has-op-zbigniew"><td class="col-done"><input type="checkbox" class="done-cb" id="done-041"><label for="done-041" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">18:00–18:30</td><td class="col-event"><span class="type-tag tag-koncert">Koncert</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13823" target="_blank" rel="noopener"><strong>Z(a)mysły</strong></a> (set I) = Nowicki Duo</td><td class="col-sala">VIP Room (+1)</td><td class="col-proj">6924</td><td class="col-prod">Le Karolina</td><td class="col-presence required">TAK (chwilę, wybrać set)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-koncert has-op-zbigniew"><td class="col-done"><input type="checkbox" class="done-cb" id="done-042"><label for="done-042" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">18:30–19:00</td><td class="col-event"><span class="type-tag tag-koncert">Koncert</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13821" target="_blank" rel="noopener"><strong>Ry(t)my // Pieśni</strong></a> (set I) = flow unit</td><td class="col-sala">Foyer +2</td><td class="col-proj">6925</td><td class="col-prod">Le Karolina</td><td class="col-presence required">TAK (chwilę, wybrać set)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-koncert has-op-zbigniew"><td class="col-done"><input type="checkbox" class="done-cb" id="done-043"><label for="done-043" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">18:30</td><td class="col-event"><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13812" target="_blank" rel="noopener">Surface of Timbre (set II)</a></td><td class="col-sala">Sala Kameralna NFM</td><td class="col-proj">6927</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence">(jako set I)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-koncert has-op-zbigniew"><td class="col-done"><input type="checkbox" class="done-cb" id="done-044"><label for="done-044" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">19:00–23:00</td><td class="col-event"><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13818" target="_blank" rel="noopener">Tobaro // Galeria Dźwięków (blok II)</a></td><td class="col-sala">Green Room</td><td class="col-proj">6926</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence">(jako blok I)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-koncert has-op-zbigniew"><td class="col-done"><input type="checkbox" class="done-cb" id="done-045"><label for="done-045" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">19:00–19:45</td><td class="col-event"><span class="type-tag tag-koncert">Koncert</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13819" target="_blank" rel="noopener"><strong>CARDIO Fitness</strong></a> (set II)<a class="note-marker" href="#note-cardio" title="Uwagi producenta">!</a></td><td class="col-sala">Foyer -1</td><td class="col-proj">6919</td><td class="col-prod">Muszkieta Jacek</td><td class="col-presence">TAK (lub set I/III)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-koncert has-op-zbigniew"><td class="col-done"><input type="checkbox" class="done-cb" id="done-046"><label for="done-046" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">19:30–20:00</td><td class="col-event"><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13823" target="_blank" rel="noopener">Z(a)mysły (set II) — Nowicki Duo</a></td><td class="col-sala">VIP Room (+1)</td><td class="col-proj">6924</td><td class="col-prod">Le Karolina</td><td class="col-presence">(jako set I)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-koncert has-op-zbigniew"><td class="col-done"><input type="checkbox" class="done-cb" id="done-047"><label for="done-047" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">20:00–20:30</td><td class="col-event"><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13821" target="_blank" rel="noopener">Ry(t)my // Pieśni (set II) — flow unit</a></td><td class="col-sala">Foyer +2</td><td class="col-proj">6925</td><td class="col-prod">Le Karolina</td><td class="col-presence">(jako set I)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-koncert has-op-zbigniew"><td class="col-done"><input type="checkbox" class="done-cb" id="done-048"><label for="done-048" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">20:00</td><td class="col-event"><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13812" target="_blank" rel="noopener">Surface of Timbre (set III)</a></td><td class="col-sala">Sala Kameralna NFM</td><td class="col-proj">6927</td><td class="col-prod">Jodlowski Katarzyna</td><td class="col-presence">(jako set I)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-koncert has-op-zbigniew"><td class="col-done"><input type="checkbox" class="done-cb" id="done-049"><label for="done-049" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">20:30</td><td class="col-event"><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13817" target="_blank" rel="noopener">Fangor_M (set II)</a></td><td class="col-sala">Foyer +3</td><td class="col-proj">—</td><td class="col-prod">—</td><td class="col-presence">(jako set I)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-koncert has-op-zbigniew"><td class="col-done"><input type="checkbox" class="done-cb" id="done-050"><label for="done-050" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">20:30–21:00</td><td class="col-event"><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13823" target="_blank" rel="noopener">Z(a)mysły (set III) — Nowicki Duo</a></td><td class="col-sala">VIP Room (+1)</td><td class="col-proj">6924</td><td class="col-prod">Le Karolina</td><td class="col-presence">(jako set I)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-koncert has-op-michal"><td class="col-done"><input type="checkbox" class="done-cb" id="done-051"><label for="done-051" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">20:30–22:00</td><td class="col-event"><span class="type-tag tag-koncert">Koncert</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13528" target="_blank" rel="noopener"><strong>Galeria Dźwięków / wykłady audio</strong></a> — Noc Muzeów</td><td class="col-sala">Sala Główna ORLEN</td><td class="col-proj">6913</td><td class="col-prod">(brak)</td><td class="col-presence">TAK (jeśli zostaje moc)</td><td class="col-op"><span class="op michal">Michał</span></td></tr>
+        <tr class="t-koncert has-op-zbigniew"><td class="col-done"><input type="checkbox" class="done-cb" id="done-052"><label for="done-052" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">21:00–21:45</td><td class="col-event"><span class="type-tag tag-koncert">Koncert</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13819" target="_blank" rel="noopener"><strong>CARDIO Fitness</strong></a> (set III)<a class="note-marker" href="#note-cardio" title="Uwagi producenta">!</a></td><td class="col-sala">Foyer -1</td><td class="col-proj">6919</td><td class="col-prod">Muszkieta Jacek</td><td class="col-presence">TAK (lub set I/II)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-koncert has-op-zbigniew"><td class="col-done"><input type="checkbox" class="done-cb" id="done-053"><label for="done-053" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">22:00–22:30</td><td class="col-event"><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13821" target="_blank" rel="noopener">Ry(t)my // Pieśni (set III) — flow unit</a></td><td class="col-sala">Foyer +2</td><td class="col-proj">6925</td><td class="col-prod">Le Karolina</td><td class="col-presence">(jako set I)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-koncert has-op-zbigniew"><td class="col-done"><input type="checkbox" class="done-cb" id="done-054"><label for="done-054" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">22:30</td><td class="col-event"><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13817" target="_blank" rel="noopener">Fangor_M (set III)</a></td><td class="col-sala">Foyer +3</td><td class="col-proj">—</td><td class="col-prod">—</td><td class="col-presence">(jako set I)</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-demontaz has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-055"><label for="done-055" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">23:00–01:00</td><td class="col-event">Demontaże (Tobaro, Surface, Nowicki, flow unit)</td><td class="col-sala">—</td><td class="col-proj">6924/25/26/27</td><td class="col-prod">—</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-demontaz has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-056"><label for="done-056" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">23:00–03:00</td><td class="col-event">Demontaż — Random Check</td><td class="col-sala">Sala Czerwona NFM</td><td class="col-proj">6914</td><td class="col-prod">—</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
       </tbody>
     </table>
   </div>
@@ -1081,7 +1199,7 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
     <table class="schedule">
       <thead>
         <tr>
-          <th class="col-time">Godziny</th>
+          <th class="col-done" aria-label="Zaliczone"></th><th class="col-time">Godziny</th>
           <th class="col-event">Wydarzenie</th>
           <th class="col-sala">Sala</th>
           <th class="col-proj">Projekt</th>
@@ -1091,18 +1209,18 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
         </tr>
       </thead>
       <tbody>
-        <tr class="t-demontaz has-op-none"><td class="col-time">08:00–20:00</td><td class="col-event">Demontaż NFM — Tobaro / Nowicki Duo / flow unit</td><td class="col-sala">Green Room / VIP / Foyer +2</td><td class="col-proj">6924/25/26</td><td class="col-prod">—</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
-        <tr class="t-montaz has-op-none"><td class="col-time">08:00–09:00</td><td class="col-event">Montaż sceny — #704214</td><td class="col-sala">Sala Kameralna NFM</td><td class="col-proj">6911</td><td class="col-prod">Pajorska Zuzanna</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
-        <tr class="t-garderoba has-op-none"><td class="col-time">08:00–22:00</td><td class="col-event">Garderoby — #704214 (2.05/2.06/2.07 SOLO)</td><td class="col-sala">2.05 / 2.06 / 2.07</td><td class="col-proj">6911</td><td class="col-prod">—</td><td class="col-presence">—</td><td class="col-op"><span class="op none">—</span></td></tr>
-        <tr class="t-montaz has-op-none"><td class="col-time">10:00–12:00</td><td class="col-event">Montaż dźwięk i światło — #704214</td><td class="col-sala">Sala Kameralna NFM</td><td class="col-proj">6911</td><td class="col-prod">Pajorska Zuzanna</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
-        <tr class="t-montaz has-op-none"><td class="col-time">10:00–13:30</td><td class="col-event">Montaże — voLume(n) (NFM + Spółdzielnia Muzyczna)</td><td class="col-sala">Sala Czerwona NFM</td><td class="col-proj">6918</td><td class="col-prod">Muszkieta Jacek</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
-        <tr class="t-proba has-op-zbigniew"><td class="col-time">12:00–15:30</td><td class="col-event"><span class="type-tag tag-proba">Próba</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13519" target="_blank" rel="noopener"><strong>#704214</strong></a> (Sepia Ensemble)</td><td class="col-sala">Sala Kameralna NFM</td><td class="col-proj">6911</td><td class="col-prod">Pajorska Zuzanna</td><td class="col-presence required">TAK</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
-        <tr class="t-proba has-op-michal"><td class="col-time">13:30–17:00</td><td class="col-event"><span class="type-tag tag-proba">Próba</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13520" target="_blank" rel="noopener"><strong>voLume(n)</strong></a> — soundcheck + próba<a class="note-marker" href="#note-volume" title="Uwagi producenta">!</a></td><td class="col-sala">Sala Czerwona NFM</td><td class="col-proj">6918</td><td class="col-prod">Muszkieta Jacek</td><td class="col-presence required">TAK</td><td class="col-op"><span class="op michal">Michał</span></td></tr>
-        <tr class="t-przerwa has-op-none"><td class="col-time">17:00–18:30</td><td class="col-event">Przerwa (w tym przerwa dla techniki NFM); otwarcie drzwi 18:30</td><td class="col-sala">Sala Czerwona NFM</td><td class="col-proj">6918</td><td class="col-prod">Muszkieta Jacek</td><td class="col-presence">—</td><td class="col-op"><span class="op none">—</span></td></tr>
-        <tr class="t-koncert has-op-zbigniew"><td class="col-time">17:00–18:30</td><td class="col-event"><span class="type-tag tag-koncert">Koncert</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13519" target="_blank" rel="noopener"><strong>#704214</strong></a> — ZKP (Wrocław / Poznań)</td><td class="col-sala">Sala Kameralna NFM</td><td class="col-proj">6911</td><td class="col-prod">Pajorska Zuzanna</td><td class="col-presence required">TAK</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
-        <tr class="t-demontaz has-op-none"><td class="col-time">18:30–20:00</td><td class="col-event">Demontaż — #704214</td><td class="col-sala">Sala Kameralna NFM</td><td class="col-proj">6911</td><td class="col-prod">—</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
-        <tr class="t-koncert has-op-both"><td class="col-time">19:00–20:30</td><td class="col-event"><span class="type-tag tag-koncert">Koncert finałowy</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13520" target="_blank" rel="noopener"><strong>voLume(n)</strong></a> — Spółdzielnia Muzyczna<a class="note-marker" href="#note-volume" title="Uwagi producenta">!</a></td><td class="col-sala">Sala Czerwona NFM</td><td class="col-proj">6918</td><td class="col-prod">Muszkieta Jacek</td><td class="col-presence required">TAK</td><td class="col-op"><span class="op both">Michał + Zbigniew</span></td></tr>
-        <tr class="t-demontaz has-op-none"><td class="col-time">20:30–22:00</td><td class="col-event">Demontaż — voLume(n)</td><td class="col-sala">Sala Czerwona NFM</td><td class="col-proj">6918</td><td class="col-prod">—</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-demontaz has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-057"><label for="done-057" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">08:00–20:00</td><td class="col-event">Demontaż NFM — Tobaro / Nowicki Duo / flow unit</td><td class="col-sala">Green Room / VIP / Foyer +2</td><td class="col-proj">6924/25/26</td><td class="col-prod">—</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-montaz has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-058"><label for="done-058" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">08:00–09:00</td><td class="col-event">Montaż sceny — #704214</td><td class="col-sala">Sala Kameralna NFM</td><td class="col-proj">6911</td><td class="col-prod">Pajorska Zuzanna</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-garderoba has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-059"><label for="done-059" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">08:00–22:00</td><td class="col-event">Garderoby — #704214 (2.05/2.06/2.07 SOLO)</td><td class="col-sala">2.05 / 2.06 / 2.07</td><td class="col-proj">6911</td><td class="col-prod">—</td><td class="col-presence">—</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-montaz has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-060"><label for="done-060" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">10:00–12:00</td><td class="col-event">Montaż dźwięk i światło — #704214</td><td class="col-sala">Sala Kameralna NFM</td><td class="col-proj">6911</td><td class="col-prod">Pajorska Zuzanna</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-montaz has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-061"><label for="done-061" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">10:00–13:30</td><td class="col-event">Montaże — voLume(n) (NFM + Spółdzielnia Muzyczna)</td><td class="col-sala">Sala Czerwona NFM</td><td class="col-proj">6918</td><td class="col-prod">Muszkieta Jacek</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-proba has-op-zbigniew"><td class="col-done"><input type="checkbox" class="done-cb" id="done-062"><label for="done-062" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">12:00–15:30</td><td class="col-event"><span class="type-tag tag-proba">Próba</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13519" target="_blank" rel="noopener"><strong>#704214</strong></a> (Sepia Ensemble)</td><td class="col-sala">Sala Kameralna NFM</td><td class="col-proj">6911</td><td class="col-prod">Pajorska Zuzanna</td><td class="col-presence required">TAK</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-proba has-op-michal"><td class="col-done"><input type="checkbox" class="done-cb" id="done-063"><label for="done-063" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">13:30–17:00</td><td class="col-event"><span class="type-tag tag-proba">Próba</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13520" target="_blank" rel="noopener"><strong>voLume(n)</strong></a> — soundcheck + próba<a class="note-marker" href="#note-volume" title="Uwagi producenta">!</a></td><td class="col-sala">Sala Czerwona NFM</td><td class="col-proj">6918</td><td class="col-prod">Muszkieta Jacek</td><td class="col-presence required">TAK</td><td class="col-op"><span class="op michal">Michał</span></td></tr>
+        <tr class="t-przerwa has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-064"><label for="done-064" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">17:00–18:30</td><td class="col-event">Przerwa (w tym przerwa dla techniki NFM); otwarcie drzwi 18:30</td><td class="col-sala">Sala Czerwona NFM</td><td class="col-proj">6918</td><td class="col-prod">Muszkieta Jacek</td><td class="col-presence">—</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-koncert has-op-zbigniew"><td class="col-done"><input type="checkbox" class="done-cb" id="done-065"><label for="done-065" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">17:00–18:30</td><td class="col-event"><span class="type-tag tag-koncert">Koncert</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13519" target="_blank" rel="noopener"><strong>#704214</strong></a> — ZKP (Wrocław / Poznań)</td><td class="col-sala">Sala Kameralna NFM</td><td class="col-proj">6911</td><td class="col-prod">Pajorska Zuzanna</td><td class="col-presence required">TAK</td><td class="col-op"><span class="op zbigniew">Zbigniew</span></td></tr>
+        <tr class="t-demontaz has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-066"><label for="done-066" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">18:30–20:00</td><td class="col-event">Demontaż — #704214</td><td class="col-sala">Sala Kameralna NFM</td><td class="col-proj">6911</td><td class="col-prod">—</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
+        <tr class="t-koncert has-op-both"><td class="col-done"><input type="checkbox" class="done-cb" id="done-067"><label for="done-067" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">19:00–20:30</td><td class="col-event"><span class="type-tag tag-koncert">Koncert finałowy</span><a class="event-link" href="https://www.nfm.wroclaw.pl/component/nfmcalendar/event/13520" target="_blank" rel="noopener"><strong>voLume(n)</strong></a> — Spółdzielnia Muzyczna<a class="note-marker" href="#note-volume" title="Uwagi producenta">!</a></td><td class="col-sala">Sala Czerwona NFM</td><td class="col-proj">6918</td><td class="col-prod">Muszkieta Jacek</td><td class="col-presence required">TAK</td><td class="col-op"><span class="op both">Michał + Zbigniew</span></td></tr>
+        <tr class="t-demontaz has-op-none"><td class="col-done"><input type="checkbox" class="done-cb" id="done-068"><label for="done-068" class="done-toggle" aria-label="Oznacz jako zaliczone"></label></td><td class="col-time">20:30–22:00</td><td class="col-event">Demontaż — voLume(n)</td><td class="col-sala">Sala Czerwona NFM</td><td class="col-proj">6918</td><td class="col-prod">—</td><td class="col-presence">nie wymagana</td><td class="col-op"><span class="op none">—</span></td></tr>
       </tbody>
     </table>
   </div>
@@ -1229,19 +1347,87 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
 </div>
 
 <script>
-// Highlight current festival day (gracefully skipped if JS disabled - SharePoint iframe)
+// Wszystkie JS-y opakowane w try/catch - jeśli SharePoint blokuje JS, strona dalej działa (pure CSS filters)
 try {
+  // === 1. Highlight bieżący dzień festiwalu ===
   var today = new Date();
   var day = today.getDate();
   var month = today.getMonth() + 1;
-  if (month === 5 && day >= 14 && day <= 17) {
+  var isFestival = (month === 5 && day >= 14 && day <= 17);
+
+  if (isFestival) {
     var target = document.getElementById('d' + day);
     if (target) {
       target.style.outline = '2px solid #7a1f3d';
       target.style.outlineOffset = '8px';
+      target.setAttribute('data-active', 'true');
     }
   }
-} catch (e) {}
+
+  // === 2. Auto-scroll do najbliższego nadchodzącego wydarzenia ===
+  if (isFestival) {
+    var now = new Date();
+    var nowMinutes = now.getHours() * 60 + now.getMinutes();
+    var todaySection = document.getElementById('d' + day);
+    if (todaySection) {
+      var rows = todaySection.querySelectorAll('tbody tr');
+      var bestRow = null;
+      for (var i = 0; i < rows.length; i++) {
+        var timeCell = rows[i].querySelector('.col-time');
+        if (!timeCell) continue;
+        var timeText = timeCell.textContent.trim();
+        var m = timeText.match(/^(\d{1,2}):(\d{2})/);
+        if (!m) continue;
+        var rowMinutes = parseInt(m[1], 10) * 60 + parseInt(m[2], 10);
+        // Najbliższe nadchodzące = pierwsze z czasem >= teraz - 30 min
+        // (tolerancja: jeśli wydarzenie zaczęło się <30 min temu, też uznajemy je za "aktualne")
+        if (rowMinutes >= nowMinutes - 30) {
+          bestRow = rows[i];
+          break;
+        }
+      }
+      if (bestRow) {
+        bestRow.classList.add('is-next');
+        // Scroll do wiersza z delikatnym offsetem
+        setTimeout(function() {
+          var rect = bestRow.getBoundingClientRect();
+          window.scrollBy({
+            top: rect.top - 120,
+            left: 0,
+            behavior: 'smooth'
+          });
+        }, 300);
+      }
+    }
+  }
+
+  // === 3. localStorage - zapis stanu checkboxów "done" ===
+  var STORAGE_KEY = 'mpn-harmonogram-done';
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch(e) { saved = {}; }
+  document.querySelectorAll('.done-cb').forEach(function(cb) {
+    if (saved[cb.id]) cb.checked = true;
+    cb.addEventListener('change', function() {
+      saved[cb.id] = cb.checked;
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(saved)); } catch(e) {}
+    });
+  });
+
+  // === 4. Reset filters button ===
+  var resetBtn = document.getElementById('reset-filters');
+  if (resetBtn) {
+    resetBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      document.querySelectorAll('.ft-cb, .f-cb, #wwo-mode').forEach(function(cb) {
+        cb.checked = false;
+      });
+    });
+  }
+
+} catch (e) {
+  // JS zablokowany (np. SharePoint iframe) - pure CSS filters dalej działają
+  console && console.warn && console.warn('Interactive features disabled:', e);
+}
 </script>
 
 </body>
