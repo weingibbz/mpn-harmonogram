@@ -731,6 +731,64 @@ body:has(#wwo-mode:checked) .day-num { font-size: 36px; }
 body:has(#wwo-mode:checked) .day-weekday { font-size: 13px; }
 /* Ukryj summary cells (Michał/Zbigniew opis) w WWO */
 body:has(#wwo-mode:checked) .summary { display: none; }
+/* W WWO mode kolumna "done" jest ukryta - touch precision i mniejsza */
+body:has(#wwo-mode:checked) .col-done { display: none; }
+
+
+/* W WWO mode pasek Następne jest mocniej zaakcentowany */
+body:has(#wwo-mode:checked) .next-bar.has-next {
+  background: linear-gradient(180deg, #1f1812 0%, #1a1614 100%);
+  padding-top: 12px !important;
+  padding-bottom: 12px !important;
+  border-top: 2px solid var(--accent);
+}
+body:has(#wwo-mode:checked) .next-bar.has-next .nb-time { font-size: 16px !important; }
+body:has(#wwo-mode:checked) .next-bar.has-next .nb-text { font-size: 13px !important; }
+
+/* === WWO MINI-HEADER === */
+.wwo-header {
+  position: sticky;
+  top: 56px;
+  z-index: 55;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 8px 16px;
+  margin: 0 -32px 12px;
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  border-top: 1px solid rgba(255,255,255,0.15);
+}
+body:has(#wwo-mode:checked) .wwo-header { display: flex; }
+.wwo-header .wh-day {
+  font-weight: 700;
+  font-size: 13px;
+}
+.wwo-header .wh-day em {
+  font-style: normal;
+  color: var(--accent);
+  margin: 0 2px;
+}
+.wwo-header .wh-clock {
+  background: rgba(255,255,255,0.1);
+  padding: 3px 10px;
+  font-weight: 700;
+  color: white;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+@media (max-width: 768px) {
+  .wwo-header {
+    position: static;
+    margin: 0 -12px 10px;
+    padding: 8px 12px;
+    font-size: 11px;
+  }
+  .wwo-header .wh-day { font-size: 12px; }
+}
+
 
 /* === DONE checkbox in rows (localStorage-persisted) === */
 .done-cb { display: none; }
@@ -1082,7 +1140,7 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
 <header class="masthead">
   <div class="masthead-row">
     <span>Narodowe Forum Muzyki Wrocław</span>
-    <span class="edition">(10)</span>
+    <span class="edition">(11)</span>
     <span>Harmonogram operatora</span>
   </div>
   <h1 class="title">Musica Polonica Nova<br><em>"Zmysły"</em></h1>
@@ -1125,6 +1183,14 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
     <label class="legend-item lbl-next" for="next-toggle" title="Pokaż wskaźnik najbliższego wydarzenia + pasek u dołu ekranu"><span style="font-size: 13px;">▶</span> Następne</label>
     <label class="legend-item lbl-wwo" for="wwo-mode" title="Tryb pracy w terenie (Work With Operator): tylko niezbędne info, większa czcionka, ukryte mniej istotne kolumny"><span style="font-size: 13px;">🎯</span> WWO mode</label>
   </div>
+</div>
+
+<!-- WWO mini-header: widoczny TYLKO w WWO mode, sticky pod legendą -->
+<div class="wwo-header" id="wwo-header">
+  <div class="wh-day">
+    <span id="wh-day-label">14<em>.V</em> · czw</span>
+  </div>
+  <div class="wh-clock" id="wh-clock">—:—</div>
 </div>
 
 <!-- ==================== 14 MAJA ==================== -->
@@ -1706,6 +1772,119 @@ try {
         cb.checked = false;
       });
       // Zostawiamy #next-toggle (toggle widoku, nie filtr)
+    });
+  }
+
+  // === 5. WWO mini-header — aktualny dzień (na podstawie scrolla) + zegar ===
+  var whDayLabel = document.getElementById('wh-day-label');
+  var whClock = document.getElementById('wh-clock');
+  var DAY_MAP = { 14: '14<em>.V</em> · czw', 15: '15<em>.V</em> · pt', 16: '16<em>.V</em> · sob', 17: '17<em>.V</em> · niedz' };
+
+  function updateClock() {
+    if (!whClock) return;
+    var d = new Date();
+    var hh = ('0' + d.getHours()).slice(-2);
+    var mm = ('0' + d.getMinutes()).slice(-2);
+    whClock.textContent = hh + ':' + mm;
+  }
+
+  function updateWwoDayHeader() {
+    if (!whDayLabel) return;
+    // Znajdź sekcję dnia która jest najbliżej viewport (top w zakresie 0..200px lub najbliższa)
+    var sections = document.querySelectorAll('section.day');
+    var bestSection = null;
+    var bestDist = Infinity;
+    for (var i = 0; i < sections.length; i++) {
+      var rect = sections[i].getBoundingClientRect();
+      // Sekcja widoczna i jej top jest najbliżej 100px od góry
+      if (rect.bottom > 100 && rect.top < window.innerHeight) {
+        var dist = Math.abs(rect.top - 100);
+        if (dist < bestDist) {
+          bestDist = dist;
+          bestSection = sections[i];
+        }
+      }
+    }
+    if (bestSection) {
+      var id = bestSection.id; // 'd14', 'd15', ...
+      var dayNum = parseInt(id.replace('d', ''), 10);
+      if (DAY_MAP[dayNum]) whDayLabel.innerHTML = DAY_MAP[dayNum];
+    }
+  }
+
+  updateClock();
+  updateWwoDayHeader();
+  setInterval(updateClock, 30000); // zegar co 30s
+  window.addEventListener('scroll', updateWwoDayHeader, { passive: true });
+
+  // === 6. Auto-refresh paska Następne co 60s + klikalność (scroll do wiersza) ===
+  function refreshNextEvent() {
+    // Wyczyść stary is-next
+    var oldNext = document.querySelectorAll('.is-next');
+    for (var sn = 0; sn < oldNext.length; sn++) oldNext[sn].classList.remove('is-next');
+
+    // Pobierz świeży czas
+    today = new Date();
+    day = today.getDate();
+    month = today.getMonth() + 1;
+    isFestivalDay = (month === 5 && day >= 14 && day <= 17);
+
+    var newNext = findNextEvent();
+    if (newNext) {
+      newNext.classList.add('is-next');
+      var nbBar = document.getElementById('next-bar');
+      var nbTime = document.getElementById('nb-time');
+      var nbText = document.getElementById('nb-text');
+      var nbOp = document.getElementById('nb-op');
+      if (nbBar && nbTime && nbText) {
+        var timeText = newNext.querySelector('.col-time').textContent.trim();
+        var eventCell = newNext.querySelector('.col-event');
+        var salaCell = newNext.querySelector('.col-sala');
+        var opCell = newNext.querySelector('.col-op');
+        var dayNum = newNext.closest('section.day');
+        var dayLabel = '';
+        if (dayNum) {
+          var dn = dayNum.querySelector('.day-num');
+          if (dn) dayLabel = dn.textContent.replace(/\s+/g, '').trim() + ' · ';
+        }
+        var eventText = eventCell ? eventCell.textContent.replace(/\s+/g, ' ').trim() : '';
+        var salaText = salaCell ? salaCell.textContent.trim() : '';
+        nbTime.textContent = dayLabel + timeText;
+        nbText.textContent = eventText + (salaText ? ' · ' + salaText : '');
+        if (nbOp && opCell) {
+          var opText = opCell.textContent.trim();
+          nbOp.textContent = opText;
+          nbOp.className = 'nb-op';
+          if (newNext.classList.contains('has-op-michal'))   nbOp.classList.add('op-michal-color');
+          else if (newNext.classList.contains('has-op-zbigniew')) nbOp.classList.add('op-zbigniew-color');
+          else if (newNext.classList.contains('has-op-both'))    nbOp.classList.add('op-both-color');
+        }
+      }
+    }
+  }
+  setInterval(refreshNextEvent, 60000); // co minutę
+
+  // Klikalność paska Następne — scroll do is-next wiersza
+  var nextBar = document.getElementById('next-bar');
+  if (nextBar) {
+    nextBar.style.cursor = 'pointer';
+    nextBar.setAttribute('role', 'button');
+    nextBar.setAttribute('tabindex', '0');
+    nextBar.setAttribute('aria-label', 'Przewiń do najbliższego wydarzenia');
+    var scrollToNext = function() {
+      var target = document.querySelector('.is-next');
+      if (target) {
+        var rect = target.getBoundingClientRect();
+        window.scrollBy({
+          top: rect.top - 160,
+          left: 0,
+          behavior: 'smooth'
+        });
+      }
+    };
+    nextBar.addEventListener('click', scrollToNext);
+    nextBar.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); scrollToNext(); }
     });
   }
 
