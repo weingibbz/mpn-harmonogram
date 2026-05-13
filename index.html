@@ -735,8 +735,8 @@ body:has(#wwo-mode:checked) .summary { display: none; }
 body:has(#wwo-mode:checked) .col-done { display: none; }
 
 
-/* W WWO mode pasek Następne jest mocniej zaakcentowany (DESKTOP only - mobile keeps default size) */
-@media (min-width: 769px) {
+/* W WWO mode pasek Następne jest mocniej zaakcentowany — TYLKO TRUE DESKTOP (wyklucz phone landscape) */
+@media (min-width: 769px) and (min-height: 501px) {
   body:has(#wwo-mode:checked) .next-bar.has-next {
     background: linear-gradient(180deg, #1f1812 0%, #1a1614 100%);
     padding-top: 12px !important;
@@ -750,29 +750,33 @@ body:has(#wwo-mode:checked) .col-done { display: none; }
 /* === WWO MINI-HEADER (sticky, day + clock) === */
 .wwo-header {
   position: sticky;
-  top: 56px;
-  z-index: 55;
+  top: 0;
+  z-index: 70;
   background: var(--ink);
   color: var(--paper);
-  padding: 10px 32px;
-  margin: 0 -32px 12px;
+  padding: 8px 32px;
+  margin: 0 -32px 8px;
   display: none;
   align-items: center;
   justify-content: space-between;
   font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
-  font-size: 13px;
+  font-size: 12px;
   letter-spacing: 0.06em;
   border-top: 2px solid var(--accent);
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.25);
   flex-wrap: nowrap;
   white-space: nowrap;
   overflow: hidden;
-  min-height: 38px;
+  min-height: 32px;
   box-sizing: border-box;
+  gap: 12px;
 }
-/* Desktop: pokazuj wwo-header GDY WWO mode włączony */
+/* Desktop: pokazuj wwo-header GDY WWO mode włączony + przesuń legend pod niego */
 body:has(#wwo-mode:checked) .wwo-header { display: flex; }
+@media (min-width: 769px) {
+  body:has(#wwo-mode:checked) .legend-wrap { top: 32px; }
+}
 .wwo-header .wh-day {
   font-weight: 700;
   font-size: 13px;
@@ -1004,6 +1008,31 @@ body:has(#f-zbigniew:checked) tr.has-op-none     { display: none; }
 body:has(#f-required:checked) tr.has-op-none     { display: none; }
 
 /* === RESPONSIVE & PRINT === */
+
+/* === NOTES (Uwagi producenta) — class-based, kontrolowalne mediami === */
+.note-p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #4a4340;
+  margin: 0 0 8px;
+}
+.note-p:last-child { margin-bottom: 0; }
+.note-p-meta {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #7a5a1f;
+  font-style: italic;
+}
+.note-eyebrow {
+  font-family: ui-monospace, 'SF Mono', Monaco, Menlo, monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #7a5a1f;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
 @media (max-width: 768px) {
   body { font-size: 15px; -webkit-text-size-adjust: 100%; }
   .shell { padding: 0 12px 60px; max-width: 100vw; overflow-x: hidden; }
@@ -1041,6 +1070,11 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
     width: 100%;
   }
   .legend-item { font-size: 12px !important; padding: 6px 10px; }
+
+  /* Bloki uwag w mobile portrait - lekkie zmniejszenie */
+  .note-p { font-size: 12.5px; line-height: 1.5; }
+  .note-eyebrow { font-size: 9.5px; }
+
   .legend-sep { display: none; }
   #reset-filters { margin-left: auto !important; }
   /* Next-bar na mobile - kompaktowy, czas/data nie powiększane (więcej miejsca dla event) */
@@ -1177,20 +1211,20 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
     white-space: nowrap;
     width: 100%;
   }
-  /* Bloki uwag producenta — agresywnie mniejsze (inline style nadpisuje !important) */
+  /* Bloki uwag producenta — agresywnie mniejsze (class-based, działa bez !important) */
   div[id^="note-"] {
-    padding: 8px 10px !important;
-    margin-top: 8px !important;
+    padding: 8px 10px;
+    margin-top: 8px;
   }
-  div[id^="note-"] p {
-    font-size: 10.5px !important;
-    line-height: 1.4 !important;
-    margin: 0 0 4px !important;
+  .note-p {
+    font-size: 10.5px;
+    line-height: 1.4;
+    margin: 0 0 4px;
   }
-  div[id^="note-"] p:last-child { margin-bottom: 0 !important; }
-  div[id^="note-"] > div:first-child {
-    font-size: 9px !important;
-    margin-bottom: 4px !important;
+  .note-p-meta { font-size: 10px; }
+  .note-eyebrow {
+    font-size: 9px;
+    margin-bottom: 4px;
   }
   /* Pasek Następne na dole - 20% niższy, czcionki ujednolicone */
   .next-bar {
@@ -1255,7 +1289,7 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
 <header class="masthead">
   <div class="masthead-row">
     <span>Narodowe Forum Muzyki Wrocław</span>
-    <span class="edition">(13)</span>
+    <span class="edition">(14)</span>
     <span>Harmonogram operatora</span>
   </div>
   <h1 class="title">Musica Polonica Nova<br><em>"Zmysły"</em></h1>
@@ -1483,10 +1517,10 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
   </div>
 
   <div id="note-zoom" style="background: #fff8e1; border-left: 4px solid #b08540; padding: 16px 20px; margin-top: 16px; border-radius: 0 4px 4px 0; scroll-margin-top: 80px;">
-    <div style="font-family: ui-monospace, 'SF Mono', Monaco, Menlo, monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #7a5a1f; margin-bottom: 8px; font-weight: 700;">Uwagi producenta — Zoom In // Zoom Out (15.05)</div>
-    <p style="font-size: 14px; line-height: 1.6; color: #4a4340; margin: 0 0 8px;">Harmonogram tego projektu wciąż jest opracowywany i <strong style="color: #1a1614;">będzie bardzo napięty</strong>.</p>
-    <p style="font-size: 14px; line-height: 1.6; color: #4a4340; margin: 0 0 8px;"><strong style="color: #1a1614;">Wywiady z artystami</strong> — wyłącznie na foyer. Na sali tylko ujęcia ogólne <em>poza sceną</em> (bez wywiadów).</p>
-    <p style="font-size: 14px; line-height: 1.6; color: #4a4340; margin: 0;">Przy utworze <strong style="color: #1a1614;">J. Kornowicza</strong> jest sporo ruchu na parterze, w amfiteatrze i na balkonie +1 — żeby nie przeszkadzać i uchwycić całość, najlepiej ustawić kamerę w okolicach organów.</p>
+    <div class="note-eyebrow">Uwagi producenta — Zoom In // Zoom Out (15.05)</div>
+    <p class="note-p">Harmonogram tego projektu wciąż jest opracowywany i <strong>będzie bardzo napięty</strong>.</p>
+    <p class="note-p"><strong>Wywiady z artystami</strong> — wyłącznie na foyer. Na sali tylko ujęcia ogólne <em>poza sceną</em> (bez wywiadów).</p>
+    <p class="note-p">Przy utworze <strong>J. Kornowicza</strong> jest sporo ruchu na parterze, w amfiteatrze i na balkonie +1 — żeby nie przeszkadzać i uchwycić całość, najlepiej ustawić kamerę w okolicach organów.</p>
   </div>
 </section>
 
@@ -1568,9 +1602,9 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
     </table>
   </div>
   <div id="note-cardio" style="background: #fff8e1; border-left: 4px solid #b08540; padding: 16px 20px; margin-top: 16px; border-radius: 0 4px 4px 0; scroll-margin-top: 80px;">
-    <div style="font-family: ui-monospace, 'SF Mono', Monaco, Menlo, monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #7a5a1f; margin-bottom: 8px; font-weight: 700;">Uwagi producenta — CARDIO Fitness (16.05) · Jacek Muszkieta</div>
-    <p style="font-size: 14px; line-height: 1.6; color: #4a4340; margin: 0 0 8px;"><strong style="color: #1a1614;">15:15</strong> — wywiad TVP Kultura (do rejestracji przez TVP).</p>
-    <p style="font-size: 14px; line-height: 1.6; color: #4a4340; margin: 0;"><strong style="color: #1a1614;">Sety</strong>: 16:00–16:45 · 19:00–19:45 · 21:00–21:45. Wykonawca wyraża zgodę na rejestrację całości foto/audio/video do celów wewnętrznych i 5-min fragmentów do celów promocyjnych.</p>
+    <div class="note-eyebrow">Uwagi producenta — CARDIO Fitness (16.05) · Jacek Muszkieta</div>
+    <p class="note-p"><strong>15:15</strong> — wywiad TVP Kultura (do rejestracji przez TVP).</p>
+    <p class="note-p"><strong>Sety</strong>: 16:00–16:45 · 19:00–19:45 · 21:00–21:45. Wykonawca wyraża zgodę na rejestrację całości foto/audio/video do celów wewnętrznych i 5-min fragmentów do celów promocyjnych.</p>
   </div>
 </section>
 
@@ -1629,11 +1663,11 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
   </div>
 
   <div id="note-volume" style="background: #fff8e1; border-left: 4px solid #b08540; padding: 16px 20px; margin-top: 16px; border-radius: 0 4px 4px 0; scroll-margin-top: 80px;">
-    <div style="font-family: ui-monospace, 'SF Mono', Monaco, Menlo, monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #7a5a1f; margin-bottom: 8px; font-weight: 700;">Uwagi producenta — voLume(n) (17.05) · Jacek Muszkieta</div>
-    <p style="font-size: 14px; line-height: 1.6; color: #4a4340; margin: 0 0 10px;"><strong style="color: #1a1614;">Rejestracje obce:</strong> koncert nagrywany audio przez Polskie Radio (retransmisja). Audio-video przez TVP Kultura — materiał filmowy do 5 min.</p>
-    <p style="font-size: 14px; line-height: 1.6; color: #4a4340; margin: 0 0 10px;"><strong style="color: #1a1614;">Ustawienie ekipy foto-video:</strong> za publicznością LUB pod ścianą po lewej stronie Sali Czerwonej, tak aby nie przeszkadzać widzom i artystom. Konkretne miejsce wskaże OW (organizator wydarzenia). <strong style="color: #1a1614;">Dogadać się z TVP</strong>.</p>
-    <p style="font-size: 14px; line-height: 1.6; color: #4a4340; margin: 0 0 10px;"><strong style="color: #1a1614;">Ważne:</strong> nie wychodzić w trakcie koncertu, nie chodzić po widowni — koncert jest nagrywany.</p>
-    <p style="font-size: 13px; line-height: 1.6; color: #7a5a1f; margin: 0; font-style: italic;">Wykonawca wyraża zgodę na rejestrację całości foto/audio/video do celów wewnętrznych i 5-min fragmentów do celów promocyjnych.</p>
+    <div class="note-eyebrow">Uwagi producenta — voLume(n) (17.05) · Jacek Muszkieta</div>
+    <p class="note-p"><strong>Rejestracje obce:</strong> koncert nagrywany audio przez Polskie Radio (retransmisja). Audio-video przez TVP Kultura — materiał filmowy do 5 min.</p>
+    <p class="note-p"><strong>Ustawienie ekipy foto-video:</strong> za publicznością LUB pod ścianą po lewej stronie Sali Czerwonej, tak aby nie przeszkadzać widzom i artystom. Konkretne miejsce wskaże OW (organizator wydarzenia). <strong>Dogadać się z TVP</strong>.</p>
+    <p class="note-p"><strong>Ważne:</strong> nie wychodzić w trakcie koncertu, nie chodzić po widowni — koncert jest nagrywany.</p>
+    <p class="note-p">Wykonawca wyraża zgodę na rejestrację całości foto/audio/video do celów wewnętrznych i 5-min fragmentów do celów promocyjnych.</p>
   </div>
 
 </section>
