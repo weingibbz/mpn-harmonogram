@@ -747,71 +747,10 @@ body:has(#wwo-mode:checked) .col-done { display: none; }
   body:has(#wwo-mode:checked) .next-bar.has-next .nb-text { font-size: 13px !important; }
 }
 
-/* === WWO MINI-HEADER (sticky, day + clock, ZAWSZE WIDOCZNY niezależnie od WWO mode) === */
-.wwo-header {
-  position: sticky;
-  top: 55px;
-  z-index: 60;
-  background: var(--ink);
-  color: var(--paper);
-  padding: 8px 32px;
-  margin: 0 -32px 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
-  font-size: 12px;
-  letter-spacing: 0.06em;
-  border-top: 2px solid var(--accent);
-  border-bottom: 1px solid rgba(255,255,255,0.15);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.25);
-  flex-wrap: nowrap;
-  white-space: nowrap;
-  overflow: hidden;
-  min-height: 36px;
-  box-sizing: border-box;
-  gap: 12px;
-}
-.wwo-header .wh-day {
-  font-weight: 700;
-  font-size: 13px;
-  flex: 1 1 auto;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.wwo-header .wh-day em {
-  font-style: normal;
-  color: var(--accent);
-  margin: 0 2px;
-}
-.wwo-header .wh-clock {
-  background: rgba(255,255,255,0.1);
-  padding: 3px 10px;
-  font-weight: 700;
-  color: white;
-  border: 1px solid rgba(255,255,255,0.2);
-  flex-shrink: 0;
-  font-variant-numeric: tabular-nums;
-}
+
 
 /* Mobile portrait: WWO header POKAZYWANY ZAWSZE (niezależnie od WWO mode), niski profil */
 @media (max-width: 768px) and (orientation: portrait) {
-  .wwo-header {
-    display: flex !important;
-    position: sticky !important;
-    top: 0 !important;
-    margin: 0 -12px 8px !important;
-    padding: 5px 12px !important;
-    font-size: 11px !important;
-    min-height: 28px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-  }
-  .wwo-header .wh-day { font-size: 11px !important; }
-  .wwo-header .wh-clock {
-    padding: 2px 7px !important;
-    font-size: 11px !important;
-  }
 }
 
 
@@ -1001,6 +940,14 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
 /* === RESPONSIVE & PRINT === */
 
 /* === NOTES (Uwagi producenta) — class-based, kontrolowalne mediami === */
+.note-block {
+  background: #fff8e1;
+  border-left: 4px solid #b08540;
+  padding: 16px 20px;
+  margin-top: 16px;
+  border-radius: 0 4px 4px 0;
+  scroll-margin-top: 80px;
+}
 .note-p {
   font-size: 14px;
   line-height: 1.6;
@@ -1038,7 +985,7 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
     gap: 8px;
   }
   .day-nav a { font-size: 12px; padding: 8px 10px; }
-  /* Legend-wrap na mobile - sticky top:0, wwo-header pod nią (scrolluje się z treścią) */
+  /* Legend-wrap na mobile - sticky top:0 */
   .legend-wrap {
     flex-direction: column;
     position: sticky !important;
@@ -1049,15 +996,6 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
     gap: 8px !important;
     box-shadow: 0 2px 4px rgba(0,0,0,0.08) !important;
   }
-  .wwo-header {
-    position: sticky !important;
-    padding: 5px 12px !important;
-    margin: 0 -12px 8px !important;
-    font-size: 11px !important;
-    min-height: 28px !important;
-  }
-  .wwo-header .wh-day { font-size: 11px !important; }
-  .wwo-header .wh-clock { padding: 2px 7px !important; font-size: 11px !important; }
   .legend {
     flex-wrap: wrap !important;
     gap: 6px 8px !important;
@@ -1201,18 +1139,6 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
   .type-tag { font-size: 8.5px; padding: 1px 4px; }
 
   /* === WWO header w mobile landscape - bardzo niski profil (~22px) === */
-  .wwo-header {
-    padding: 3px 16px !important;
-    margin: 0 -16px 0 !important;
-    font-size: 10px !important;
-    min-height: 22px !important;
-    border-top-width: 1px !important;
-  }
-  .wwo-header .wh-day { font-size: 10px !important; }
-  .wwo-header .wh-clock {
-    padding: 1px 6px !important;
-    font-size: 10px !important;
-  }
 
   /* Legend-wrap mobile landscape - sticky top:0, wwo pod nią */
   .legend-wrap {
@@ -1225,16 +1151,6 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
     top: 0 !important;
     z-index: 65;
   }
-  .wwo-header {
-    position: sticky !important;
-    padding: 3px 16px !important;
-    margin: 0 -16px 8px !important;
-    font-size: 10px !important;
-    min-height: 22px !important;
-    border-top-width: 1px !important;
-  }
-  .wwo-header .wh-day { font-size: 10px !important; }
-  .wwo-header .wh-clock { padding: 1px 6px !important; font-size: 10px !important; }
   .legend {
     flex: 1 1 auto;
     flex-wrap: wrap;
@@ -1263,7 +1179,7 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
     width: 100%;
   }
   /* Bloki uwag producenta — agresywnie mniejsze (class-based, działa bez !important) */
-  div[id^="note-"] {
+  .note-block {
     padding: 8px 10px;
     margin-top: 8px;
   }
@@ -1340,7 +1256,7 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
 <header class="masthead">
   <div class="masthead-row">
     <span>Narodowe Forum Muzyki Wrocław</span>
-    <span class="edition">(17)</span>
+    <span class="edition">(18)</span>
     <span>Harmonogram operatora</span>
   </div>
   <h1 class="title">Musica Polonica Nova<br><em>"Zmysły"</em></h1>
@@ -1385,11 +1301,6 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
   </div>
 </div>
 
-<!-- Pasek dnia i zegara (sticky pod legendą) -->
-<div class="wwo-header" id="wwo-header">
-  <div class="wh-day">
-    <span id="wh-day-label">14<em>.V</em> · czw</span>
-  </div>
   <div class="wh-clock" id="wh-clock">—:—</div>
 </div>
 
@@ -1567,7 +1478,7 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
     </table>
   </div>
 
-  <div id="note-zoom" style="background: #fff8e1; border-left: 4px solid #b08540; padding: 16px 20px; margin-top: 16px; border-radius: 0 4px 4px 0; scroll-margin-top: 80px;">
+  <div id="note-zoom" class="note-block">
     <div class="note-eyebrow">Uwagi producenta — Zoom In // Zoom Out (15.05)</div>
     <p class="note-p">Harmonogram tego projektu wciąż jest opracowywany i <strong>będzie bardzo napięty</strong>.</p>
     <p class="note-p"><strong>Wywiady z artystami</strong> — wyłącznie na foyer. Na sali tylko ujęcia ogólne <em>poza sceną</em> (bez wywiadów).</p>
@@ -1652,7 +1563,7 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
       </tbody>
     </table>
   </div>
-  <div id="note-cardio" style="background: #fff8e1; border-left: 4px solid #b08540; padding: 16px 20px; margin-top: 16px; border-radius: 0 4px 4px 0; scroll-margin-top: 80px;">
+  <div id="note-cardio" class="note-block">
     <div class="note-eyebrow">Uwagi producenta — CARDIO Fitness (16.05) · Jacek Muszkieta</div>
     <p class="note-p"><strong>15:15</strong> — wywiad TVP Kultura (do rejestracji przez TVP).</p>
     <p class="note-p"><strong>Sety</strong>: 16:00–16:45 · 19:00–19:45 · 21:00–21:45. Wykonawca wyraża zgodę na rejestrację całości foto/audio/video do celów wewnętrznych i 5-min fragmentów do celów promocyjnych.</p>
@@ -1713,7 +1624,7 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
     </table>
   </div>
 
-  <div id="note-volume" style="background: #fff8e1; border-left: 4px solid #b08540; padding: 16px 20px; margin-top: 16px; border-radius: 0 4px 4px 0; scroll-margin-top: 80px;">
+  <div id="note-volume" class="note-block">
     <div class="note-eyebrow">Uwagi producenta — voLume(n) (17.05) · Jacek Muszkieta</div>
     <p class="note-p"><strong>Rejestracje obce:</strong> koncert nagrywany audio przez Polskie Radio (retransmisja). Audio-video przez TVP Kultura — materiał filmowy do 5 min.</p>
     <p class="note-p"><strong>Ustawienie ekipy foto-video:</strong> za publicznością LUB pod ścianą po lewej stronie Sali Czerwonej, tak aby nie przeszkadzać widzom i artystom. Konkretne miejsce wskaże OW (organizator wydarzenia). <strong>Dogadać się z TVP</strong>.</p>
@@ -1976,32 +1887,8 @@ try {
   }
 
   // === 5. WWO mini-header — aktualny dzień (na podstawie scrolla) + zegar ===
-  var whDayLabel = document.getElementById('wh-day-label');
-  var whClock = document.getElementById('wh-clock');
-  var DAY_MAP = { 14: '14<em>.V</em> · czw', 15: '15<em>.V</em> · pt', 16: '16<em>.V</em> · sob', 17: '17<em>.V</em> · niedz' };
 
-  function updateClock() {
-    if (!whClock) return;
-    var d = new Date();
-    var hh = ('0' + d.getHours()).slice(-2);
-    var mm = ('0' + d.getMinutes()).slice(-2);
-    whClock.textContent = hh + ':' + mm;
-  }
 
-  function updateWwoDayHeader() {
-    if (!whDayLabel) return;
-    // Znajdź AKTUALNIE PRZEWIJANY dzień: sekcja której top jest <=120px ALE bottom > 120px
-    // (czyli ta która zaczyna się od góry viewport lub się rozciąga przez całą widoczną część)
-    var sections = document.querySelectorAll('section.day');
-    var currentSection = null;
-    var threshold = 120; // px od top viewport (pod sticky header)
-    // Iteruj odwrotnie: znajdź pierwszy dzień którego top <= threshold (czyli już zaczął się scrollować poza górę)
-    for (var i = sections.length - 1; i >= 0; i--) {
-      var rect = sections[i].getBoundingClientRect();
-      if (rect.top <= threshold && rect.bottom > threshold) {
-        currentSection = sections[i];
-        break;
-      }
     }
     // Fallback: jeśli żaden nie spełnia warunku, weź pierwszą widoczną
     if (!currentSection) {
@@ -2020,10 +1907,6 @@ try {
     }
   }
 
-  updateClock();
-  updateWwoDayHeader();
-  setInterval(updateClock, 30000); // zegar co 30s
-  window.addEventListener('scroll', updateWwoDayHeader, { passive: true });
 
   // === 6. Auto-refresh paska Następne co 60s + klikalność (scroll do wiersza) ===
   function refreshNextEvent() {
