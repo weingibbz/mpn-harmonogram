@@ -735,15 +735,17 @@ body:has(#wwo-mode:checked) .summary { display: none; }
 body:has(#wwo-mode:checked) .col-done { display: none; }
 
 
-/* W WWO mode pasek Następne jest mocniej zaakcentowany */
-body:has(#wwo-mode:checked) .next-bar.has-next {
-  background: linear-gradient(180deg, #1f1812 0%, #1a1614 100%);
-  padding-top: 12px !important;
-  padding-bottom: 12px !important;
-  border-top: 2px solid var(--accent);
+/* W WWO mode pasek Następne jest mocniej zaakcentowany (DESKTOP only - mobile keeps default size) */
+@media (min-width: 769px) {
+  body:has(#wwo-mode:checked) .next-bar.has-next {
+    background: linear-gradient(180deg, #1f1812 0%, #1a1614 100%);
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+    border-top: 2px solid var(--accent);
+  }
+  body:has(#wwo-mode:checked) .next-bar.has-next .nb-time { font-size: 16px !important; }
+  body:has(#wwo-mode:checked) .next-bar.has-next .nb-text { font-size: 13px !important; }
 }
-body:has(#wwo-mode:checked) .next-bar.has-next .nb-time { font-size: 16px !important; }
-body:has(#wwo-mode:checked) .next-bar.has-next .nb-text { font-size: 13px !important; }
 
 /* === WWO MINI-HEADER === */
 .wwo-header {
@@ -752,15 +754,17 @@ body:has(#wwo-mode:checked) .next-bar.has-next .nb-text { font-size: 13px !impor
   z-index: 55;
   background: var(--ink);
   color: var(--paper);
-  padding: 8px 16px;
+  padding: 10px 32px;
   margin: 0 -32px 12px;
   display: none;
   align-items: center;
   justify-content: space-between;
   font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: 0.06em;
-  border-top: 1px solid rgba(255,255,255,0.15);
+  border-top: 2px solid var(--accent);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 body:has(#wwo-mode:checked) .wwo-header { display: flex; }
 .wwo-header .wh-day {
@@ -780,13 +784,12 @@ body:has(#wwo-mode:checked) .wwo-header { display: flex; }
   border: 1px solid rgba(255,255,255,0.2);
 }
 @media (max-width: 768px) {
-  .wwo-header {
-    position: static;
-    margin: 0 -12px 10px;
-    padding: 8px 12px;
-    font-size: 11px;
-  }
-  .wwo-header .wh-day { font-size: 12px; }
+  /* Mini-header CAŁKOWICIE UKRYTY na mobile (zarówno portrait jak landscape) */
+  .wwo-header { display: none !important; }
+}
+/* Mobile landscape też ukrywa */
+@media (orientation: landscape) and (max-height: 500px) {
+  .wwo-header { display: none !important; }
 }
 
 
@@ -1012,10 +1015,11 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
   .legend-item { font-size: 12px !important; padding: 6px 10px; }
   .legend-sep { display: none; }
   #reset-filters { margin-left: auto !important; }
-  /* Next-bar na mobile - wyższy padding, mniejszy text */
-  .next-bar { padding: 8px 12px !important; font-size: 11px !important; gap: 8px !important; }
-  .next-bar .nb-time { font-size: 13px !important; }
-  .next-bar .nb-text { font-size: 11px !important; }
+  /* Next-bar na mobile - kompaktowy, czas/data nie powiększane (więcej miejsca dla event) */
+  .next-bar { padding: 8px 12px !important; font-size: 11px !important; gap: 6px !important; }
+  .next-bar .nb-label { padding: 2px 6px !important; font-size: 9px !important; }
+  .next-bar .nb-time { font-size: 11px !important; }
+  .next-bar .nb-text { font-size: 11px !important; flex: 1 1 auto; min-width: 0; }
   .next-bar .nb-op { font-size: 10px !important; padding: 3px 6px !important; }
   .day-num { font-size: 48px; }
   .day-title { font-size: 20px; }
@@ -1106,6 +1110,59 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
   body:has(#wwo-mode:checked) .col-event .event-link { font-weight: 500; }
 }
 
+
+/* === MOBILE LANDSCAPE: phone w orientacji poziomej === */
+/* Wykrywanie: orientation landscape + low height (telefon, nie laptop) */
+@media (orientation: landscape) and (max-height: 500px) {
+  /* Legend-wrap: legenda po lewej, view-controls po prawej WĄSKO i pionowo (Następne nad WWO) */
+  .legend-wrap {
+    flex-direction: row;
+    align-items: stretch;
+    gap: 8px;
+    padding: 6px 16px;
+    margin: 0 -16px 12px;
+  }
+  .legend {
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+  .legend-item {
+    font-size: 11px !important;
+    padding: 3px 6px !important;
+  }
+  /* View-controls: kolumna - Następne nad WWO, zajmują mało szerokości */
+  .view-controls {
+    flex: 0 0 auto;
+    flex-direction: column;
+    gap: 4px;
+    padding: 6px 10px;
+    width: auto;
+    border-top: none !important;
+    border-left: 3px solid var(--accent) !important;
+  }
+  .view-controls .legend-item {
+    font-size: 10px !important;
+    padding: 4px 8px !important;
+    text-align: center;
+    white-space: nowrap;
+    width: 100%;
+  }
+  /* Bloki uwag producenta — mniejsza czcionka */
+  div[id^="note-"] {
+    padding: 10px 12px !important;
+  }
+  div[id^="note-"] p {
+    font-size: 11px !important;
+    line-height: 1.4 !important;
+  }
+  div[id^="note-"] > div:first-child {
+    font-size: 9px !important;
+  }
+}
+
 @media print {
   body { background: white; font-size: 11px; }
   .day-nav, .filters { display: none; }
@@ -1140,7 +1197,7 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
 <header class="masthead">
   <div class="masthead-row">
     <span>Narodowe Forum Muzyki Wrocław</span>
-    <span class="edition">(11)</span>
+    <span class="edition">(12)</span>
     <span>Harmonogram operatora</span>
   </div>
   <h1 class="title">Musica Polonica Nova<br><em>"Zmysły"</em></h1>
@@ -1790,23 +1847,31 @@ try {
 
   function updateWwoDayHeader() {
     if (!whDayLabel) return;
-    // Znajdź sekcję dnia która jest najbliżej viewport (top w zakresie 0..200px lub najbliższa)
+    // Znajdź AKTUALNIE PRZEWIJANY dzień: sekcja której top jest <=120px ALE bottom > 120px
+    // (czyli ta która zaczyna się od góry viewport lub się rozciąga przez całą widoczną część)
     var sections = document.querySelectorAll('section.day');
-    var bestSection = null;
-    var bestDist = Infinity;
-    for (var i = 0; i < sections.length; i++) {
+    var currentSection = null;
+    var threshold = 120; // px od top viewport (pod sticky header)
+    // Iteruj odwrotnie: znajdź pierwszy dzień którego top <= threshold (czyli już zaczął się scrollować poza górę)
+    for (var i = sections.length - 1; i >= 0; i--) {
       var rect = sections[i].getBoundingClientRect();
-      // Sekcja widoczna i jej top jest najbliżej 100px od góry
-      if (rect.bottom > 100 && rect.top < window.innerHeight) {
-        var dist = Math.abs(rect.top - 100);
-        if (dist < bestDist) {
-          bestDist = dist;
-          bestSection = sections[i];
+      if (rect.top <= threshold && rect.bottom > threshold) {
+        currentSection = sections[i];
+        break;
+      }
+    }
+    // Fallback: jeśli żaden nie spełnia warunku, weź pierwszą widoczną
+    if (!currentSection) {
+      for (var j = 0; j < sections.length; j++) {
+        var r = sections[j].getBoundingClientRect();
+        if (r.bottom > 0 && r.top < window.innerHeight) {
+          currentSection = sections[j];
+          break;
         }
       }
     }
-    if (bestSection) {
-      var id = bestSection.id; // 'd14', 'd15', ...
+    if (currentSection) {
+      var id = currentSection.id;
       var dayNum = parseInt(id.replace('d', ''), 10);
       if (DAY_MAP[dayNum]) whDayLabel.innerHTML = DAY_MAP[dayNum];
     }
