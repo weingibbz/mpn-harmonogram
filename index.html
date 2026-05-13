@@ -496,12 +496,11 @@ tr.t-montaz td.col-event, tr.t-demontaz td.col-event, tr.t-garderoba td.col-even
   position: sticky;
   top: 0;
   z-index: 65;
-  margin: 0 -32px 0;
+  margin: 0 -32px 24px;
   display: flex;
   gap: 12px;
   background: var(--paper);
   padding: 12px 32px;
-  border-top: 2px solid var(--ink);
   border-bottom: 1px solid var(--line);
   box-shadow: 0 2px 6px rgba(0,0,0,0.06);
   align-items: stretch;
@@ -1256,7 +1255,7 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
 <header class="masthead">
   <div class="masthead-row">
     <span>Narodowe Forum Muzyki Wrocław</span>
-    <span class="edition">(18)</span>
+    <span class="edition">(19)</span>
     <span>Harmonogram operatora</span>
   </div>
   <h1 class="title">Musica Polonica Nova<br><em>"Zmysły"</em></h1>
@@ -1299,9 +1298,6 @@ body:has(#f-required:checked) tr.has-op-none     { display: none; }
     <label class="legend-item lbl-next" for="next-toggle" title="Pokaż wskaźnik najbliższego wydarzenia + pasek u dołu ekranu"><span style="font-size: 13px;">▶</span> Następne</label>
     <label class="legend-item lbl-wwo" for="wwo-mode" title="Tryb pracy w terenie (Work With Operator): tylko niezbędne info, większa czcionka, ukryte mniej istotne kolumny"><span style="font-size: 13px;">🎯</span> WWO mode</label>
   </div>
-</div>
-
-  <div class="wh-clock" id="wh-clock">—:—</div>
 </div>
 
 <!-- ==================== 14 MAJA ==================== -->
@@ -1886,29 +1882,7 @@ try {
     });
   }
 
-  // === 5. WWO mini-header — aktualny dzień (na podstawie scrolla) + zegar ===
-
-
-    }
-    // Fallback: jeśli żaden nie spełnia warunku, weź pierwszą widoczną
-    if (!currentSection) {
-      for (var j = 0; j < sections.length; j++) {
-        var r = sections[j].getBoundingClientRect();
-        if (r.bottom > 0 && r.top < window.innerHeight) {
-          currentSection = sections[j];
-          break;
-        }
-      }
-    }
-    if (currentSection) {
-      var id = currentSection.id;
-      var dayNum = parseInt(id.replace('d', ''), 10);
-      if (DAY_MAP[dayNum]) whDayLabel.innerHTML = DAY_MAP[dayNum];
-    }
-  }
-
-
-  // === 6. Auto-refresh paska Następne co 60s + klikalność (scroll do wiersza) ===
+  // === 5. Auto-refresh paska Następne co 60s + klikalność (scroll do wiersza) ===
   function refreshNextEvent() {
     // Wyczyść stary is-next
     var oldNext = document.querySelectorAll('.is-next');
